@@ -3,3 +3,4 @@
 *.blg
 *.log
 *.out
+/template_files

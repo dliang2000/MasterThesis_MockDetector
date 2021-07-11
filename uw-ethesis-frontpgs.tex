@@ -1,0 +1,167 @@
+% T I T L E   P A G E
+% -------------------
+% Last updated October 23, 2020, by Stephen Carr, IST-Client Services
+% The title page is counted as page `i' but we need to suppress the
+% page number. Also, we don't want any headers or footers.
+\pagestyle{empty}
+\pagenumbering{roman}
+
+% The contents of the title page are specified in the "titlepage"
+% environment.
+\begin{titlepage}
+        \begin{center}
+        \vspace*{1.0cm}
+
+        \Huge
+        {\bf MockDetector: Detecting and tracking mock objects in unit tests }
+
+        \vspace*{1.0cm}
+
+        \normalsize
+        by \\
+
+        \vspace*{1.0cm}
+
+        \Large
+        Qian Liang \\
+
+        \vspace*{3.0cm}
+
+        \normalsize
+        A thesis \\
+        presented to the University of Waterloo \\ 
+        in fulfillment of the \\
+        thesis requirement for the degree of \\
+        Master of Applied Science \\
+        in \\
+        Electrical and Computer Engineering \\
+
+        \vspace*{2.0cm}
+
+        Waterloo, Ontario, Canada, 2021 \\
+
+        \vspace*{1.0cm}
+
+        \copyright\ Qian Liang 2021 \\
+        \end{center}
+\end{titlepage}
+
+% The rest of the front pages should contain no headers and be numbered using Roman numerals starting with `ii'
+\pagestyle{plain}
+\setcounter{page}{2}
+
+\cleardoublepage % Ends the current page and causes all figures and tables that have so far appeared in the input to be printed.
+% In a two-sided printing style, it also makes the next page a right-hand (odd-numbered) page, producing a blank page if necessary.
+
+ 
+% E X A M I N I N G   C O M M I T T E E (Required for Ph.D. theses only)
+% Remove or comment out the lines below to remove this page
+\begin{center}\textbf{Examining Committee Membership}\end{center}
+  \noindent
+The following served on the Examining Committee for this thesis. The decision of the Examining Committee is by majority vote.
+  \bigskip
+  
+  \noindent
+\begin{tabbing}
+Internal-External Member: \=  \kill % using longest text to define tab length
+Supervisor(s): \> Patrick Lam \\
+\> Associate Professor \\
+\> University of Waterloo \\
+\end{tabbing}
+  \bigskip
+  
+  \noindent
+  \begin{tabbing}
+Internal-External Member: \=  \kill % using longest text to define tab length
+Internal Member: \> Derek Rayside \\
+\> Associate Professor \\
+\> University of Waterloo \\
+\end{tabbing}
+  \bigskip
+  
+  \noindent
+\begin{tabbing}
+Internal-External Member: \=  \kill % using longest text to define tab length
+Internal Member: \> Gregor Richards \\
+\> Lecturer \\
+\> University of Waterloo \\
+\end{tabbing}
+  \bigskip
+
+\cleardoublepage
+
+% D E C L A R A T I O N   P A G E
+% -------------------------------
+  % The following is a sample Delaration Page as provided by the GSO
+  % December 13th, 2006.  It is designed for an electronic thesis.
+ \begin{center}\textbf{Author's Declaration}\end{center}
+  
+ \noindent
+I hereby declare that I am the sole author of this thesis. This is a true copy of the thesis,
+including any required final revisions, as accepted by my examiners. % Do I discuss about the co-author of the submitted research paper here?
+
+  \bigskip
+  
+  \noindent
+I understand that my thesis may be made electronically available to the public.
+
+\cleardoublepage
+
+% A B S T R A C T
+% ---------------
+
+\begin{center}\textbf{Abstract}\end{center}
+
+% Used the abstract from research paper submission for now. Will modify the text.
+Unit testing is a widely used tool in modern software development processes. A well-known issue in writing tests is handling dependencies: creating usable objects for dependencies is often complicated. Developers must therefore often introduce mock objects to stand in for dependencies during testing. 
+
+Test suites are an increasingly-important component of the source code of a software system. We believe that the static analysis of test suites, alongside the systems under test, can enable developers to better characterize the behaviours of existing test suites, thus guiding further test suite analysis and manipulation. However, because mock objects are created using reflection, they confound existing static analysis techniques. At present, it is impossible to statically distinguish methods invoked on mock objects from methods invoked on real objects. Static analysis tools therefore currently cannot determine which dependencies' methods are actually tested, versus mock methods being called.
+
+In this paper, we introduce MockDetector, a technique to identify mock objects and pinpoint method invocations on mock objects. We first built a Soot-based imperative dataflow analysis implementation of MockDetector. Then, to quickly prototype new analysis features and to explore declarative program analysis, we created a Doop-based declarative analysis, added features to it, and ported them back to the Soot-based analysis. Both analyses handle common Java mock libraries' APIs for creating mock objects and propagate this information through test cases. Following our observations of tests in the wild, we have added special-case support for arrays and collections holding mock objects. On our suite of 8 open-source benchmarks, our imperative dataflow analysis approach reported 2,095 invocations on mock objects, whereas our declarative dataflow approach reported 2,130 invocations on mock objects, out of a total number of 63,017 method invocations in test suites; across benchmarks, mock invocations accounted for a range from 0.086\% to 16.4\% of the total invocations. Removing confounding mock invocations from consideration as focal methods can improve the precision of focal method analysis, a key prerequisite to further analysis of test cases. %Both implementations have reported the same number of intra-procedural mock invocations on 4 out of the 8 open source benchmarks analyzed. 
+
+% results part to be updated
+
+\cleardoublepage
+
+% A C K N O W L E D G E M E N T S
+% -------------------------------
+
+\begin{center}\textbf{Acknowledgements}\end{center}
+
+I would like to thank to my advisor, Professor Patrick Lam, without whom, the thesis
+would not have been possible. I would also like to thank to the readers of the thesis,
+Professor Gregor Richards and Professor Derek Rayside.
+\cleardoublepage
+
+% D E D I C A T I O N
+% -------------------
+
+\begin{center}\textbf{Dedication}\end{center}
+
+I dedicate the thesis to my family, who have always supported me during my study and life at University of Waterloo.
+\cleardoublepage
+
+% T A B L E   O F   C O N T E N T S
+% ---------------------------------
+\renewcommand\contentsname{Table of Contents}
+\tableofcontents
+\cleardoublepage
+\phantomsection    % allows hyperref to link to the correct page
+
+% L I S T   O F   F I G U R E S
+% -----------------------------
+\addcontentsline{toc}{chapter}{List of Figures}
+\listoffigures
+\cleardoublepage
+\phantomsection		% allows hyperref to link to the correct page
+
+% L I S T   O F   T A B L E S
+% ---------------------------
+\addcontentsline{toc}{chapter}{List of Tables}
+\listoftables
+\cleardoublepage
+\phantomsection		% allows hyperref to link to the correct page
+
+% Change page numbering back to Arabic numerals
+\pagenumbering{arabic}
+
