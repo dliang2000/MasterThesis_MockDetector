@@ -71,16 +71,23 @@
 %\newcommand{\texorpdfstring}[2]{#1} % does nothing, but defines the command
 % Anything defined here may be redefined by packages added below...
 
+\usepackage{array, booktabs, makecell} % For formal tables
+
+\usepackage{listings}
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+
 % This package allows if-then-else control structures.
 \usepackage{ifthen}
 \newboolean{PrintVersion}
 \setboolean{PrintVersion}{false}
 % CHANGE THIS VALUE TO "true" as necessary, to improve printed results for hard copies by overriding some options of the hyperref package, called below.
 
-%\usepackage{nomencl} % For a nomenclature (optional; available from ctan.org)
-\usepackage{amsmath,amssymb,amstext} % Lots of math symbols and environments
-\usepackage[pdftex]{graphicx} % For including graphics N.B. pdftex graphics driver 
 
+%\usepackage{nomencl} % For a nomenclature (optional; available from ctan.org)
+\usepackage{amsmath, amsthm, amssymb, amsfonts} % Lots of math symbols and environments
+\usepackage[pdftex]{graphicx} % For including graphics N.B. pdftex graphics driver 
 % Hyperlinks make it very easy to navigate an electronic document.
 % In addition, this is where you should specify the thesis title and author as they appear in the properties of the PDF document.
 % Use the "hyperref" package 
@@ -179,7 +186,15 @@
 %----------------------------------------------------------------------
 \input{introduction.tex}
 
+\input{related-work.tex} % Background?
+
 \input{motivating-example.tex}
+
+\input{technique.tex}
+
+\input{evaluation.tex}
+
+\input{discussion.tex}
 
 %----------------------------------------------------------------------
 % END MATERIAL
@@ -219,7 +234,7 @@
 \chapter*{APPENDICES}
 \addcontentsline{toc}{chapter}{APPENDICES}
 % Appendices are just more chapters, with different labeling (letters instead of numbers).
-%\input{appendix-matlab_plots.tex}
+\input{field-mutation.tex}
 
 % GLOSSARIES (Lists of definitions, abbreviations, symbols, etc. provided by the glossaries-extra package)
 % -----------------------------

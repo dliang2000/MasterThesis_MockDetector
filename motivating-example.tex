@@ -1,50 +1,122 @@
 %======================================================================
 \chapter{Motivating-Examples}
-%======================================================================
+%====================================================================== 
 
-This would be a good place for some figures and tables.
-
-Some notes on figures and photographs\ldots
-
-\begin{itemize}
-\item A well-prepared PDF should be 
-  \begin{enumerate}
-    \item Of reasonable size, {\it i.e.} photos cropped and compressed.
-    \item Scalable, to allow enlargment of text and drawings. 
-  \end{enumerate} 
-\item Photos must be bit maps, and so are not scaleable by definition. TIFF and
-BMP are uncompressed formats, while JPEG is compressed. Most photos can be
-compressed without losing their illustrative value.
-\item Drawings that you make should be scalable vector graphics, \emph{not} 
-bit maps. Some scalable vector file formats are: EPS, SVG, PNG, WMF. These can
-all be converted into PNG or PDF, that pdflatex recognizes. Your drawing 
-package can probably export to one of these formats directly. Otherwise, a 
-common procedure is to print-to-file through a Postscript printer driver to 
-create a PS file, then convert that to EPS (encapsulated PS, which has a 
-bounding box to describe its exact size rather than a whole page). 
-Programs such as GSView (a Ghostscript GUI) can create both EPS and PDF from PS files.
-Appendix~\ref{AppendixA} shows how to generate properly sized Matlab plots and save them as PDF.
-\item It's important to crop your photos and draw your figures to the size that
-you want to appear in your thesis. Scaling photos with the 
-includegraphics command will cause loss of resolution. And scaling down 
-drawings may cause any text annotations to become too small.
-\end{itemize}
-
-For more information on \LaTeX\, see these  \href{https://uwaterloo.ca/information-systems-technology/services/electronic-thesis-preparation-and-submission-support/ethesis-guide/creating-pdf-version-your-thesis/creating-pdf-files-using-latex/latex-ethesis-and-large-documents}{course notes}. 
-\footnote{
-Note that while it is possible to include hyperlinks to external documents,
-it is not wise to do so, since anything you can't control may change over time. 
-It \emph{would} be appropriate and necessary to provide external links to 
-additional resources that you provide for a multimedia ``enhanced'' thesis. 
-But also note that if the \package{hyperref} package is not included, 
-as for the print-optimized option in this thesis template, any \cmmd{href} 
-commands in your logical document are no longer defined.
-A work-around employed by this thesis template is to define a dummy \cmmd{href} 
-command (which does nothing) in the preamble of the document, 
-before the \package{hyperref} package is included. 
-The dummy definition is then redifined by the
-\package{hyperref} package when it is included.
+\begin{lstlisting}[basicstyle=\ttfamily, caption={This code snippet illustrates an example from maven-core, where calls to both the focal method \texttt{getToolchainsForType()} and to mock \texttt{session}'s \texttt{getRequest()} method occur in test \textit{testMisconfiguredToolchain()}.},
+basicstyle=\scriptsize\ttfamily,language = Java, framesep=4.5mm, escapechar=|,
+framexleftmargin=1.0mm, captionpos=b, label=lis:mockCall, morekeywords={@Test}]
+@Test
+public void testMisconfiguredToolchain()
+	throws Exception {
+	MavenSession session = mock( MavenSession.class );
+	MavenExecutionRequest req = 
+	new DefaultMavenExecutionRequest();
+	when( session.getRequest() ).thenReturn( req ); |\label{line:mock}|
+	
+	ToolchainPrivate[] basics =
+	toolchainManager.getToolchainsForType("basic", session); |\label{line:real}|
+	
+	assertEquals( 0, basics.length );
 }
+\end{lstlisting}
 
-The classic book by Leslie Lamport \cite{lamport.book}, author of \LaTeX , is worth a look too, and the many available add-on packages are described by 
-Goossens \textit{et al} \cite{goossens.book}.
+
+\begin{figure}
+	\begin{lstlisting}[basicstyle=\ttfamily,
+	basicstyle=\scriptsize\ttfamily,language = Java, framesep=4.5mm, framexleftmargin=1.0mm, captionpos=b, escapechar=|, morekeywords={@Test}]
+	//        mock: |\xmark~\,|    mockAPI: |\xmark|
+	Object object1 = new Object();
+	
+	// mock: |\xmark|
+	object1.foo();
+	
+	//        mock: |\cmark|     mockAPI: |\cmark|
+	Object object2 = mock(Object.class);
+	
+	// mock: |\cmark|
+	object2.foo();
+	\end{lstlisting}
+	%    \includegraphics[width=.25\textwidth]{Images/mockInvocationIllustration.png}
+	
+	\caption{Our static analysis propagates mockness from sources (e.g. \texttt{mock(Object.class}) to invocations.}
+	\label{fig:mockMethodIllustration}
+	
+\end{figure}
+
+\begin{lstlisting}[basicstyle=\ttfamily, caption={Jimple Intermediate Representation for the code in Figure~\ref{fig:mockMethodIllustration}.},
+basicstyle=\scriptsize\ttfamily, captionpos=b, label=lis:mockMethodIllustrationIR, escapechar=|, morekeywords={@Test, specialinvoke, virtualinvoke, staticinvoke}]
+java.lang.Object $r1, r2;
+
+$r1 = new java.lang.Object; |\label{line:lis3line3}|
+specialinvoke $r1.<java.lang.Object: void <init>()>(); |\label{line:lis3line4}|
+virtualinvoke $r1.<java.lang.Object: void foo()>(); |\label{line:lis3line5}|
+r2 = staticinvoke <org.mockito.Mockito: |\label{line:lis3line6}|
+	java.lang.Object mock(java.lang.Class)> |\label{line:lis3line7}|
+	(class "Ljava/lang/Object;");
+virtualinvoke r2.<java.lang.Object: void foo()>(); |\label{line:lis3line9}|
+\end{lstlisting}
+
+
+\begin{lstlisting}[basicstyle=\ttfamily, caption={Facts about invocation \texttt{r2.foo()} in method \texttt{test}.},
+basicstyle=\scriptsize\ttfamily, framesep=4.5mm, framexleftmargin=1.0mm, captionpos=b, label=lis:facts, escapechar=!, morekeywords={@Test}]
+isMockInvocation(<Object: void foo()>/test/0, 
+<Object: void foo()>, test, _. r2). !\label{line:facts-imi}!
+|VirtualMethodInvocation(<Object: void foo()>/test/0, !\label{line:facts-vmi}!
+|                        <Object: void foo()>, test).
+|VirtualMethodInvocation_Base(<Object: void foo()>/test/0, 
+|                                  r2).
+|isMockVar(r2). !\label{line:facts-imv}!
+|-AssignReturnValue(<Mockito: Object mock(Class)>/test/0, !\label{line:facts-arv}!
+|                        r2). 
+|-callsMockSource(<Mockito: Object mock(Class)>/test/0). !\label{line:facts-cms}!
+|MockSourceMethod(<Mockito: Object mock(Class)>). !\label{line:facts-msm}!
+|CallGraphEdge(_, <Mockito: Object mock(Class)>/test/0, _, !\label{line:facts-cge}!
+|              <Mockito: Object mock(Class)>). 
+\end{lstlisting}
+
+
+\begin{lstlisting}[basicstyle=\ttfamily, caption={This example illustrates a field array container holding mock objects from \textit{setup()} in \texttt{NodeListIteratorTest.java}.},
+basicstyle=\scriptsize\ttfamily,language = Java, framesep=4.5mm, framexleftmargin=1.0mm, captionpos=b, label=lis:container, escapechar=|, morekeywords={@Test}]
+// Node array to be filled with mock Node instances
+private Node[] nodes;
+@Test
+protected void setUp() throws Exception {
+	// create mock Node Instances and 
+	// fill Node[] to be used by test cases
+	final Node node1 = createMock(Element.class);
+	final Node node2 = createMock(Element.class);
+	final Node node3 = createMock(Text.class);
+	final Node node4 = createMock(Element.class);
+	nodes = new Node[] {node1, node2, node3, node4}; |\label{line:storeMocksInArray}|
+	// ...
+}
+\end{lstlisting}
+
+
+\begin{figure}
+	\begin{lstlisting}[
+	basicstyle=\scriptsize\ttfamily,language = Java, framesep=4.5mm, framexleftmargin=1.0mm, captionpos=b, escapechar=|, morekeywords={@Test}]
+	//        mock: |\cmark|     mockAPI: |\cmark|
+	Object object1 = createMock(Object.class);
+	
+	// arrayMock: |\cmark| |$\Leftarrow$| array-write    |~~|  mock: |\cmark|
+	objects  |~~|           = new Object[]  |~|  { object1 };
+	\end{lstlisting}
+	
+	\caption{Our static analysis also finds array mocks.}
+	\label{fig:arrayMockIllustration}
+	
+\end{figure}
+
+\begin{lstlisting}[basicstyle=\ttfamily, caption={Jimple Intermediate Representation for the array in Figure~\ref{fig:arrayMockIllustration}.},
+basicstyle=\scriptsize\ttfamily, framesep=4.5mm, framexleftmargin=1.0mm, captionpos=b, label=lis:arrayIllustrationIR, escapechar=|, morekeywords={@Test, specialinvoke, virtualinvoke, staticinvoke, newarray}]
+java.lang.Object r1, $r2;
+java.lang.Object[] $r3;
+
+$r2 = staticinvoke <org.easymock.EasyMock: |\label{line:lis4line4}|
+java.lang.Object createMock(java.lang.Class)>
+(class "java.lang.Object;"); |\label{line:lis4line6}|
+r1 = (java.lang.Object) $r2; |\label{line:lis4line7}|
+$r3 = newarray (java.lang.Object)[1]; |\label{line:lis4line8}|
+$r3[0] = r1;  |\label{line:lis4line9}|
+\end{lstlisting}
