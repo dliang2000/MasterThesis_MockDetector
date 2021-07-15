@@ -71,6 +71,8 @@
 %\newcommand{\texorpdfstring}[2]{#1} % does nothing, but defines the command
 % Anything defined here may be redefined by packages added below...
 
+\usepackage{csvsimple}
+
 \usepackage{array, booktabs, makecell} % For formal tables
 
 \usepackage{listings}
@@ -163,6 +165,7 @@
 \input{glossaries}
 \makeglossaries
 
+
 %======================================================================
 %   L O G I C A L    D O C U M E N T
 % The logical document contains the main content of your thesis.
@@ -186,13 +189,13 @@
 %----------------------------------------------------------------------
 \input{introduction.tex}
 
-\input{related-work.tex} % Background?
-
 \input{motivating-example.tex}
 
 \input{technique.tex}
 
 \input{evaluation.tex}
+
+\input{related-work.tex} % Background?
 
 \input{discussion.tex}
 

@@ -53,27 +53,40 @@
 
 \begin{table*}
 	\centering
-	\caption{Comparison of Number of InstanceInvokeExprs on Mock objects analyzed by Soot and Doop, and Total Number of InstanceInvokeExprs, in each benchmark's test suite. N/A = timed out after 90 minutes.}
-	%	\begin{adjustbox}{width=0.1\textwidth}
-	\begin{tabular}{lrrrrrr}
-		\toprule
-		Benchmark & \thead{Total Number \\ of Invocations} & \thead{Mock Invokes \\ intraproc (Soot)} & \thead{Basic-only, \\ intraproc (Doop)} & \thead{Context-insensitive, \\ intraproc (Doop)} &  \thead{Basic-only, \\ interproc (Doop)} &\thead{Context-insensitive, \\ interproc (Doop)} \\
-		\midrule
-		bootique-2.0.B1-bootique           		&  3366     &  99   & 99    & 99   & 120   & 122    \\
-		commons-collections4-4.4       			&  12753    &  11   & 0     &  3   & 0    & 23   \\
-		flink-core-1.13.0-rc1           		&  11923    &  40   & 40    & 40   & 1262  & 1389   \\
-		jsonschema2pojo-core-1.1.1      	     	&  1896     &  276  & 282   & 282  & 462   & 604   \\
-		maven-core-3.8.1           			&  4072     &  23   & 23    & 23   & 31    & 39  \\
-		microbenchmark         		  		&  471      &  108  & 123   & 123  & 132   & 132   \\
-		mybatis-3.5.6         		  		&  19232    &  575  & N/A   & 577  &  N/A  & 1345     \\
-		quartz-core-2.3.1       	  		&  3436     &  21   & 21    & 21   & 23    & 31    \\
-		vraptor-core-3.5.51        	  		&  5868     &  942  & 963   & 962  & 1301  & 1630   \\
-		\bottomrule
-		Total        	  				&  63017    & 2095  & N/A   & 2130  & N/A  & 5315   \\
-	\end{tabular}
-	%	\end{adjustbox}
+	\caption{Comparison of Number of InstanceInvokeExprs on Mock objects analyzed by Soot and Doop, and Total Number of InstanceInvokeExprs, in each benchmark's test suite. 0 = timed out after 90 minutes.}
+	\csvreader[tabular=|r|*{10}{p{9mm}}|,%
+	table head=\hline Benchmark & Total Number of Invocations & Mock Invokes intraproc (Soot) 
+					& basic-only-intraproc & CI-intraproc & CIPP-intraproc & 1-object-sens-intraproc 
+					& basic-only-interproc & CI-interproc & CIPP-interproc & 1-object-sens-interproc\\\hline]%
+	{DoopAndSootMockCounts.csv}{}%
+	{\csvcoli&\csvcolii&\csvcoliii&\csvcoliv&\csvcolv&\csvcolvi&\csvcolvii&\csvcolviii&\csvcolix&\csvcolx&\csvcolxi}
 	\label{tab:invokes}
-\end{table*}
+\end{table*} 
+
+
+%\begin{table*}
+%	\centering
+%	\caption{Comparison of Number of InstanceInvokeExprs on Mock objects analyzed by Soot and Doop, and Total Number of InstanceInvokeExprs, in each benchmark's test suite. N/A = timed out after 90 minutes.}
+%	%	\begin{adjustbox}{width=0.1\textwidth}
+%	\begin{tabular}{lrrrrrr}
+%		\toprule
+%		Benchmark & \thead{Total Number \\ of Invocations} & \thead{Mock Invokes \\ intraproc (Soot)} & \thead{Basic-only, \\ intraproc (Doop)} & \thead{Context-insensitive, \\ intraproc (Doop)} &  \thead{Basic-only, \\ interproc (Doop)} &\thead{Context-insensitive, \\ interproc (Doop)} \\
+%		\midrule
+%		bootique-2.0.B1-bootique           		&  3366     &  99   & 99    & 99   & 120   & 122    \\
+%		commons-collections4-4.4       			&  12753    &  11   & 0     &  3   & 0    & 23   \\
+%		flink-core-1.13.0-rc1           		&  11923    &  40   & 40    & 40   & 1262  & 1389   \\
+%		jsonschema2pojo-core-1.1.1      	     	&  1896     &  276  & 282   & 282  & 462   & 604   \\
+%		maven-core-3.8.1           			&  4072     &  23   & 23    & 23   & 31    & 39  \\
+%		microbenchmark         		  		&  471      &  108  & 123   & 123  & 132   & 132   \\
+%		mybatis-3.5.6         		  		&  19232    &  575  & N/A   & 577  &  N/A  & 1345     \\
+%		quartz-core-2.3.1       	  		&  3436     &  21   & 21    & 21   & 23    & 31    \\
+%		vraptor-core-3.5.51        	  		&  5868     &  942  & 963   & 962  & 1301  & 1630   \\
+%		\bottomrule
+%		Total        	  				&  63017    & 2095  & N/A   & 2130  & N/A  & 5315   \\
+%	\end{tabular}
+%	%	\end{adjustbox}
+%	\label{tab:invokes}
+%\end{table*}
 
 \begin{table*}
 	\centering
