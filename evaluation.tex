@@ -6,6 +6,7 @@
 	\centering
 	\caption{Our suite of 8 open-source benchmarks (8000--117000 LOC) plus our microbenchmark. Soot and Doop analysis runtimes.}
 	%	\begin{adjustbox}{width=0.1\textwidth}
+	\resizebox{\columnwidth}{!}{%
 	\begin{tabular}{lrrrrrr}
 		\toprule
 		Benchmark & Total LOC & Test LOC & \thead{Soot intraproc \\ total time (s)} & \thead{Doop intraproc \\ total time (s)} & \thead{Soot intraproc \\ mock analysis (s)}  & \thead{Doop intraproc \\ mock analysis (s)} \\
@@ -22,6 +23,7 @@
 		\bottomrule
 		Total         	  						&  384033  & 184405 & 2082 & 13989 &  2.675  & 202.37     \\
 	\end{tabular}
+	}
 	%	\end{adjustbox}
 	\label{tab:runtimes}
 \end{table*}
