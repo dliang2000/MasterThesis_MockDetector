@@ -53,10 +53,11 @@
 	\label{tab:mocks}
 \end{table*}
 
+\begin{landscape}
 \begin{table*}
 	\centering
 	\caption{Comparison of Number of InstanceInvokeExprs on Mock objects analyzed by Soot and Doop, and Total Number of InstanceInvokeExprs, in each benchmark's test suite. 0 = timed out after 90 minutes.}
-	\csvreader[tabular=|r|*{10}{p{9mm}}|,%
+	\csvreader[tabular=|r|*{10}{p{14mm}}|,%
 	table head=\hline Benchmark & Total Number of Invocations & Mock Invokes intraproc (Soot) 
 					& basic-only-intraproc & CI-intraproc & CIPP-intraproc & 1-object-sens-intraproc 
 					& basic-only-interproc & CI-interproc & CIPP-interproc & 1-object-sens-interproc\\\hline]%
@@ -64,7 +65,7 @@
 	{\csvcoli&\csvcolii&\csvcoliii&\csvcoliv&\csvcolv&\csvcolvi&\csvcolvii&\csvcolviii&\csvcolix&\csvcolx&\csvcolxi}
 	\label{tab:invokes}
 \end{table*} 
-
+\end{landscape}
 
 %\begin{table*}
 %	\centering
