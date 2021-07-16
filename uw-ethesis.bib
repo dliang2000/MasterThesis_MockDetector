@@ -1,28 +1,248 @@
 % Bibliography of key references for "LaTeX for Thesis and Large Documents"
 % For use with BibTeX
 
-@book{goossens.book,
-	author =	"Michel Goossens and Frank Mittelbach and 
-			 Alexander Samarin",
-	title =		"The \LaTeX\ Companion",
-	year = 		"1994",
-	publisher =	"Addison-Wesley",
-	address = 	"Reading, Massachusetts"
+@inproceedings{Vallee-Rai:1999:SJB:781995.782008,
+ author = {Vall{\'e}e-Rai, Raja and Co, Phong and Gagnon, Etienne and Hendren, Laurie and Lam, Patrick and Sundaresan, Vijay},
+ title = {Soot---a {Java} Bytecode Optimization Framework},
+ booktitle = {Proceedings of the 1999 Conference of the Centre for Advanced Studies on Collaborative Research},
+ series = {CASCON '99},
+ year = {1999},
+ location = {Mississauga, Ontario, Canada},
+ pages = {214--224},
+ url = {http://dl.acm.org/citation.cfm?id=781995.782008},
+ acmid = {782008},
+ publisher = {IBM Press},
+} 
+
+@Book{beck02:_test_driven_devel,
+  author = 	 {Beck, Kent},
+  title = 	 {Test-Driven Development: By Example},
+  publisher = 	 {Addison-Wesley Professional},
+  year = 	 2002}
+
+
+@inproceedings{bravenboer09:_stric_declar_specif_sophis_point_analy,
+author = {Bravenboer, Martin and Smaragdakis, Yannis},
+title = {Strictly Declarative Specification of Sophisticated Points-to Analyses},
+year = 2009,
+isbn = 9781605587660,
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/1640089.1640108},
+doi = {10.1145/1640089.1640108},
+abstract = {We present the DOOP framework for points-to analysis of Java programs. DOOP builds on the idea of specifying pointer analysis algorithms declaratively, using Datalog: a logic-based language for defining (recursive) relations. We carry the declarative approach further than past work by describing the full end-to-end analysis in Datalog and optimizing aggressively using a novel technique specifically targeting highly recursive Datalog programs.As a result, DOOP achieves several benefits, including full order-of-magnitude improvements in runtime. We compare DOOP with Lhotak and Hendren's PADDLE, which defines the state of the art for context-sensitive analyses. For the exact same logical points-to definitions (and, consequently, identical precision) DOOP is more than 15x faster than PADDLE for a 1-call-site sensitive analysis of the DaCapo benchmarks, with lower but still substantial speedups for other important analyses. Additionally, DOOP scales to very precise analyses that are impossible with PADDLE and Whaley et al.'s bddbddb, directly addressing open problems in past literature. Finally, our implementation is modular and can be easily configured to analyses with a wide range of characteristics, largely due to its declarativeness.},
+booktitle = {Proceedings of the 24th ACM SIGPLAN Conference on Object Oriented Programming Systems Languages and Applications},
+pages = {243–262},
+numpages = 20,
+keywords = {DOOP, points-to analysis, datalog, bdds, declarative},
+location = {Orlando, Florida, USA},
+series = {OOPSLA '09}
 }
 
-@book{knuth.book,
-        author =        "Donald Knuth",
-        title =         "The \TeX book",
-        year =          "1986",
-        publisher =     "Addison-Wesley",
-        address =       "Reading, Massachusetts"
+@inproceedings{scholz16:_fast_large_scale_progr_analy_datal,
+author = {Scholz, Bernhard and Jordan, Herbert and Suboti\'{c}, Pavle and Westmann, Till},
+title = {On Fast Large-Scale Program Analysis in {Datalog}},
+year = 2016,
+isbn = 9781450342414,
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2892208.2892226},
+doi = {10.1145/2892208.2892226},
+booktitle = {Proceedings of the 25th International Conference on Compiler Construction},
+pages = {196–206},
+numpages = 11,
+keywords = {Datalog, Compiler, Static Program Analysis, Program Synthesis},
+location = {Barcelona, Spain},
+series = {CC 2016}
 }
 
-@book{lamport.book,
-	author =        "Leslie Lamport",
-	title =         "\LaTeX\ --- A Document Preparation System",
-        edition =       "Second",
-	year = 		"1994",
-	publisher = 	"Addison-Wesley",
-	address =       "Reading, Massachusetts"
+@inproceedings{kildall73:_unified_approac_global_progr_optim,
+author = {Kildall, Gary A.},
+title = {A Unified Approach to Global Program Optimization},
+year = 1973,
+isbn = 9781450373494,
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/512927.512945},
+doi = {10.1145/512927.512945},
+booktitle = {Proceedings of the 1st Annual ACM SIGACT-SIGPLAN Symposium on Principles of Programming Languages},
+pages = {194–206},
+numpages = 13,
+location = {Boston, Massachusetts},
+series = {POPL '73}
+}
+
+@InProceedings{corsini93:_effic,
+author="Corsini, Marc-Michel
+and Musumbu, Kaninda
+and Rauzy, Antoine
+and Le Charlier, Baudouin",
+editor="Bruynooghe, Maurice
+and Penjam, Jaan",
+title="Efficient bottom-up abstract interpretation of prolog by means of constraint solving over symbolic finite domains (extended abstract)",
+booktitle="Progamming Language Implementation and Logic Programming",
+year=1993,
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="75--91",
+isbn="978-3-540-47945-1"
+}
+
+
+@Inbook{Reps1995,
+author="Reps, Thomas W.",
+editor="Ramakrishnan, Raghu",
+title="Demand Interprocedural Program Analysis Using Logic Databases",
+bookTitle="Applications of Logic Databases",
+year="1995",
+publisher="Springer US",
+address="Boston, MA",
+pages="163--196",
+abstract="This paper describes how algorithms for demand versions of interprocedural program-analysis problems can be obtained from their exhaustive counterparts essentially for free, by applying the so-called magic-sets transformation that was developed in the logic-programming and deductive-database communities. Applications to interprocedural dataflow analysis and interprocedural program slicing are described.1",
+isbn="978-1-4615-2207-2",
+doi="10.1007/978-1-4615-2207-2_8",
+url="https://doi.org/10.1007/978-1-4615-2207-2_8"
+}
+
+@InProceedings{prakash21:_effec_progr_repres_point_analy,
+author="Prakash, Jyoti
+and Tiwari, Abhishek
+and Hammer, Christian",
+editor="Guerra, Esther
+and Stoelinga, Mari{\"e}lle",
+title="Effects of Program Representation on Pointer Analyses --- An Empirical Study",
+booktitle="Fundamental Approaches to Software Engineering",
+year=2021,
+publisher="Springer International Publishing",
+address="Cham",
+pages="240--261",
+abstract="Static analysis frameworks, such as Soot and Wala, are used by researchers to prototype and compare program analyses. These frameworks vary on heap abstraction, modeling library classes, and underlying intermediate program representation (IR). Often, these variations pose a threat to the validity of the results as the implications of comparing the same analysis implementation in different frameworks are still unexplored. Earlier studies have focused on the precision, soundness, and recall of the algorithms implemented in these frameworks; however, little to no work has been done to evaluate the effects of program representation. In this work, we fill this gap and study the impact of program representation on pointer analysis. Unfortunately, existing metrics are insufficient for such a comparison due to their inability to isolate each aspect of the program representation. Therefore, we define two novel metrics that measure these analyses' precision after isolating the influence of class-hierarchy and intermediate representation. Our results establish that the minor differences in the class hierarchy and IR do not impact program analysis significantly. Besides, they reveal the sources of unsoundness that aid researchers in developing program analysis.",
+isbn="978-3-030-71500-7"
+}
+
+@Misc{wala19:_t,
+  author =    {{WALA}},
+  title =     {{T.J.} {Watson} {Libraries} for {Analysis}},
+  howpublished = {\url{https://github.com/wala/WALA}},
+  month =     {Jan},
+  year =      2019}
+
+@INPROCEEDINGS{ghafari15:_autom,
+  author={Ghafari, Mohammad and Ghezzi, Carlo and Rubinov, Konstantin},
+  booktitle={2015 IEEE 15th International Working Conference on Source Code Analysis and Manipulation (SCAM)}, 
+  title={Automatically identifying focal methods under test in unit test cases}, 
+  year=2015,
+  pages={61-70},
+  doi={10.1109/SCAM.2015.7335402}}
+
+@InProceedings{hajiyev06,
+author="Hajiyev, Elnar
+and Verbaere, Mathieu
+and de Moor, Oege",
+editor="Thomas, Dave",
+title="codeQuest: Scalable Source Code Queries with Datalog",
+booktitle="ECOOP 2006 -- Object-Oriented Programming",
+year=2006,
+publisher="Springer Berlin Heidelberg",
+address="Berlin, Heidelberg",
+pages="2--27",
+abstract="Source code querying tools allow programmers to explore relations between different parts of the code base. This paper describes such a tool, named codeQuest. It combines two previous proposals, namely the use of logic programming and database systems.",
+isbn="978-3-540-35727-8"
+}
+
+@inproceedings{dawson96:_pract_progr_analy_using_gener,
+author = {Dawson, Steven and Ramakrishnan, C. R. and Warren, David S.},
+title = {Practical Program Analysis Using General Purpose Logic Programming Systems—a Case Study},
+year = 1996,
+isbn = 0897917952,
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/231379.231399},
+doi = {10.1145/231379.231399},
+booktitle = {Proceedings of the ACM SIGPLAN 1996 Conference on Programming Language Design and Implementation},
+pages = {117–126},
+numpages = 10,
+location = {Philadelphia, Pennsylvania, USA},
+series = {PLDI '96}
+}
+
+@inproceedings{benton07:_inter_scalab_declar_progr_analy,
+author = {Benton, William C. and Fischer, Charles N.},
+title = {Interactive, Scalable, Declarative Program Analysis: From Prototype to Implementation},
+year = 2007,
+isbn = 9781595937698,
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/1273920.1273923},
+doi = {10.1145/1273920.1273923},
+booktitle = {Proceedings of the 9th ACM SIGPLAN International Conference on Principles and Practice of Declarative Programming},
+pages = {13–24},
+numpages = 12,
+keywords = {tabled prolog, logic programming, program analysis, prototyping, java, bytecodes},
+location = {Wroclaw, Poland},
+series = {PPDP '07}
+}
+
+@PhdThesis{benton08:_fast_effec_progr_analy_objec_level_paral,
+  author =       {William C. Benton},
+  title =        {Fast, Effective Program Analysis for Object-Level Parallelism.},
+  school =       {University of Wisconsin--Madison},
+  year =         2008,
+  month =     {December}}
+
+@inproceedings{bodden12:_inter_proced_data_flow_analy,
+author = {Bodden, Eric},
+title = {Inter-Procedural Data-Flow Analysis with IFDS/IDE and Soot},
+year = 2012,
+isbn = 9781450314909,
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/2259051.2259052},
+doi = {10.1145/2259051.2259052},
+booktitle = {Proceedings of the ACM SIGPLAN International Workshop on State of the Art in Java Program Analysis},
+pages = {3–8},
+numpages = 6,
+keywords = {flow-sensitive analysis, IFDS, IDE, inter-procedural static analysis},
+location = {Beijing, China},
+series = {SOAP '12}
+}
+
+@InProceedings{chu12:_collec_disjoin_analy,
+  author = 		 {Hang Chu and Patrick Lam},
+  title = 		 {Collection Disjointness Analysis},
+  booktitle = {Proceedings of the ACM SIGPLAN International Workshop on State of the Art in Java Program analysis},
+  pages = 	 {45--50},
+  numpages =     6,
+  doi =          {10.1145/2259051.2259058},
+  acmid =        2259058,
+  year = 	 2012,
+  series = 	 {SOAP '12},
+  address = 	 {Beijing, China}}
+
+@inproceedings{dillig11:_precis_reason_progr_using_contain,
+author = {Dillig, Isil and Dillig, Thomas and Aiken, Alex},
+title = {Precise Reasoning for Programs Using Containers},
+year = 2011,
+isbn = 9781450304900,
+publisher = {Association for Computing Machinery},
+address = {New York, NY, USA},
+url = {https://doi.org/10.1145/1926385.1926407},
+doi = {10.1145/1926385.1926407},
+booktitle = {Proceedings of the 38th Annual ACM SIGPLAN-SIGACT Symposium on Principles of Programming Languages},
+pages = {187–200},
+numpages = 14,
+keywords = {heap analysis, symbolic heap, container analysis},
+location = {Austin, Texas, USA},
+series = {POPL '11}}
+
+@inproceedings{soap12ifds,
+  author = 	 {Eric Bodden},
+  title = 	 {Inter-procedural Data-flow Analysis with IFDS/IDE and Soot},
+  booktitle = {1st ACM SIGPLAN International Workshop on the State Of the Art in Java Program Analysis (SOAP 2012)},
+  year = 	 2012,
+  month = 	 jul,
+  pages = {3--8},
+  doi = {10.1145/2259051.2259052},
+  url = {https://www.bodden.de/pubs/bodden12inter-procedural.pdf},  
+	annote = {an VGWort gemeldet},
 }
