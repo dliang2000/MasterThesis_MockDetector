@@ -1,3 +1,64 @@
 %======================================================================
-\chapter{Introduction}
+\chapter[Introduction]{Introduction\footnote{The contents of this 
+		chapter have been incorporated within a paper that has been submitted for publication. Qian Liang and Patrick Lam, “MockDetector: Detecting and tracking mock objects in unit tests”.
+		Submitted to 21st IEEE International Working Conference on 
+		Source Code Analysis and Manipulation. Submission date June. 30, 2021}}
+\label{chap:introduction}
 %======================================================================
+Mock objects~\cite{beck02:_test_driven_devel} are a common idiom in
+unit tests for object-oriented systems.  They allow developers to test objects that 
+rely on other objects, likely from different components, or that are simply complicated 
+to build for testing purposes (e.g. a database).
+
+While mock objects are an invaluable tool for developers, their use
+complicates the static analysis and manipulation of test case source code, one of our planned future
+research directions. Such static analyses can help IDEs provide better
+support to test case writers; enable better static estimation of test coverage
+(avoiding mocks); and detect focal methods in test cases.
+
+Ghafari et al discussed the notion of a focal method~\cite{ghafari15:_autom} for a test case---the method
+whose behaviour is being tested---and presented a heuristic for determining focal methods.
+By definition, the focal method's receiver object cannot be a mock object.
+Ruling out mock invocations can thus improve the accuracy of focal method detection and
+enable better understanding of a test case's behaviour.
+
+Mock objects are difficult to analyze statically because, at the bytecode level,
+a call to a mock object statically resembles a call to the real object (as
+intended by the designers of mock libraries).
+A naive static analysis attempting to be sound would have to include all of 
+the possible behaviours of the actual object (rather than the mock) when analyzing such code. 
+Such potential but unrealizable behaviours obscure the true behaviour 
+of the test case.
+
+We have designed a static analysis, \textsc{MockDetector}, which identifies
+mock objects in test cases. It starts from a list of mock object creation sites
+(our analyses include hardcoded APIs for common mocking libraries EasyMock, Mockito, and PowerMock). 
+It then propagates mockness
+through the test and identifies invocation sites as (possibly) mock.
+Given this analysis result, a subsequent analysis
+can ask whether a given variable in a test case contains a mock or not, and
+whether a given invocation site is a call to a mock object or not. We have
+evaluated \textsc{MockDetector} on a suite of 8 benchmarks plus a microbenchmark. 
+We have cross-checked results across the two implementations and manually inspected
+the results on our microbenchmark, to ensure that the results are as expected.
+
+Taking a broader view, we believe that helper static analyses like \textsc{MockDetector} 
+can aid
+in the development of more useful static analyses. These analyses can
+encode useful domain properties; for instance, in our case, properties
+of test cases. By taking a domain-specific approach, analyses can extract
+useful facts about programs that would otherwise be difficult to establish.
+
+We make the following contributions in this paper:
+\begin{itemize}
+	\item We designed and implemented two variants of a static mock detection algorithm, one as a dataflow analysis implemented imperatively (using Soot) and the other declaratively (using Doop).
+	\item We evaluate both the relative ease-of-implementation and precision of the imperative and declarative approaches, both intraprocedurally and interprocedurally (for Doop). % potentially intraprocedural as well
+	\item We characterize our benchmark suite (8 open-source benchmarks, 184 kLOC) with respect to their use of mock objects, finding that 1084 out of 6310 unit tests use intraprocedurally-detectable mock objects, and that there are a total of 2095 method invocations on mock objects. %We further identify how powerful an analysis is required to identify mock object use---adding fields and collections adds X mock objects, while interprocedural techniques add Y mock objects.
+\end{itemize}
+At a higher level, we see the thesis as making both a contribution and a meta-contribution to
+problems in source code analysis. The contribution, mock detection, enables more accurate analyses
+of test cases, which account for a significant fraction of modern codebases. The meta-contribution,
+comparing analysis approaches, will help future researchers decide how to best solve their
+source code analysis problems. In brief, the declarative approach allows users to quickly prototype, stating their properties
+concisely, while the imperative approach is more amenable to use in program transformation; we return
+to this question in Chapter~\ref{chap:discussion}.
