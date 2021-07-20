@@ -80,14 +80,21 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 
 \begin{landscape}
 \begin{table*}
+	\ra{1.2}
 	\centering
 	\caption{Comparison of Number of InstanceInvokeExprs on Mock objects analyzed by Soot and Doop, and Total Number of InstanceInvokeExprs, in each benchmark's test suite. 0 = timed out after 90 minutes.}
-	\csvreader[tabular=|l|*{10}{p{14mm}}|,%
-	table head=\hline Benchmark & Total Number of Invocations & Mock Invokes intraproc (Soot) 
-					& basic-only-intraproc & CI-intraproc & CIPP-intraproc & 1-object-sens-intraproc 
-					& basic-only-interproc & CI-interproc & CIPP-interproc & 1-object-sens-interproc\\\hline]%
+	
+	\begin{tabular}{@{}rrrrrrrcrrrr@{}} \toprule
+	Benchmark & \thead{Total \\ Number of \\ Invocations} & \thead{Mock Invokes \\ intraproc (Soot)}
+	& \multicolumn{4}{c}{intraproc} & \phantom{abc} & \multicolumn{4}{c}{interproc}
+	\\
+	\cmidrule{4-7} \cmidrule{9-12}
+	& & & \thead{basic\\-only} & CI & CIPP & \thead{1-obj\\-sens} & & \thead{basic\\-only} & CI & CIPP & \thead{1-obj\\-sens} \\ \midrule
+	\csvreader[head to column names, late after line=\\]
 	{Data/DoopAndSootMockCounts.csv}{}%
-	{\csvcoli&\csvcolii&\csvcoliii&\csvcoliv&\csvcolv&\csvcolvi&\csvcolvii&\csvcolviii&\csvcolix&\csvcolx&\csvcolxi}
+	{\csvcoli&\csvcolii&\csvcoliii&\csvcoliv&\csvcolv&\csvcolvi&\csvcolvii& &\csvcolviii&\csvcolix&\csvcolx&\csvcolxi}
+	\bottomrule
+	\end{tabular}
 	\label{tab:invokes}
 \end{table*} 
 \end{landscape}
@@ -116,7 +123,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 %	\label{tab:invokes}
 %\end{table*}
 
-\begin{landscape}
+%\begin{landscape}
 	\begin{table*}
 		\centering
 		\caption{Doop analysis-only runtime after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. N/A = timed out after 90 minutes.}
@@ -126,7 +133,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 		{\csvcoli&\csvcolii&\csvcoliii&\csvcoliv&\csvcolv&\csvcolvi&\csvcolvii&\csvcolviii&\csvcolix&\csvcolx&\csvcolxi&\csvcolxii&\csvcolxiii&\csvcolxiv&\csvcolxv&\csvcolxvi&\csvcolxvii}
 		\label{tab:doop-runtimes}
 	\end{table*} 
-\end{landscape}
+%\end{landscape}
 
 %\begin{table*}
 %	\centering
