@@ -21,9 +21,17 @@ In Section~\ref{sec:common} we discussed the implementation of our intraprocedur
 
 %--- , indicates the removal of mock invocations from call graph would improve the call graph's accuracy on method coverage for the benchmarks on the high end of the mock invocation percentage. 
 
-We explored the performance of our 8 declarative analysis variants based on recorded program facts, and present the numbers in Table~\ref{tab:doop-intra-runtimes} and \ref{tab:doop-inter-runtimes}. We can observe that CI and CIPP have comparable runtimes and mock invocation counts, with CI has slightly higher average runtimes, both intra-procedurally and inter-procedurally. It makes sense as CIPP is "context-insensitive with an enhancement for low-hanging fruit: methods that have their params flow to their return value get a methods that have their params flow to their return value get a 1-obj treatment”~\cite{yanniss}.
+We explored the performance of our 8 declarative analysis variants based on recorded program facts, and present the numbers in Table~\ref{tab:doop-intra-runtimes} and \ref{tab:doop-inter-runtimes}. 
 
-On the other hand, since 1-object-sensitive base analysis is a more sophisticated analysis, it spends much longer time on building the CHA graph, resulting in a much smaller call graph and thus has a faster execution time on actual mock analysis. 
+%Note that the average standard deviation is calculated by applying the pooled standard deviation formula. 
+%
+%\begin{equation}
+%\sigma_p = \sqrt{\frac{\sum_{i = 1}^{k} (n_i - 1)\sigma_i^2}{\sum_{i = 1}^{k} (n_i - 1)}}
+%\end{equation}
+
+We can observe that CI and CIPP have comparable runtimes and mock invocation counts, with CI has slightly higher average runtimes, both intra-procedurally and inter-procedurally. It makes sense as CIPP is "context-insensitive with an enhancement for low-hanging fruit: methods that have their params flow to their return value get a methods that have their params flow to their return value get a 1-obj treatment"~\cite{yanniss}.
+
+On the other hand, since 1-object-sensitive base analysis is a more sophisticated analysis, it spends much longer time on building the CHA graph (3 benchmarks ending up with timed out runs on building the CHA graph), resulting in a much smaller call graph and thus has a faster execution time on actual mock analysis. 
 
 %the number of mock invocations correlates with the runtime; taking a bit more effort to compute a better call graph may well pay off in terms of overall analysis time. We suspect that the interprocedural analysis is especially slow for mybatis because we also analyze its 50 dependencies; that count is at the high end among our benchmarks.
 
@@ -82,7 +90,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 \begin{table*}
 	\ra{1.2}
 	\centering
-	\caption{Comparison of Number of InstanceInvokeExprs on Mock objects analyzed by Soot and Doop, and Total Number of InstanceInvokeExprs, in each benchmark's test suite. N/A = timed out after 90 minutes.}
+	\caption{Comparison of Number of InstanceInvokeExprs on Mock objects analyzed by Soot and Doop, and Total Number of InstanceInvokeExprs, in each benchmark's test suite. -- = timed out after 90 minutes.}
 	
 	\begin{tabular}{@{}rrrrrrrcrrrr@{}} \toprule
 	Benchmark & \thead{Total \\ Number of \\ Invocations} & \thead{Mock Invokes \\ intraproc (Soot)}
@@ -128,7 +136,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 
 \begin{table*}
 	\centering
-	\caption{Intra-procedural Doop analysis-only runtime after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. N/A = timed out after 90 minutes.}
+	\caption{Intra-procedural Doop analysis-only runtime (in seconds) after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. -- = timed out after 90 minutes.}
 	\begin{tabular}{@{}rrrrrrrrr} \toprule
 	Benchmark & \multicolumn{8}{c}{intraproc}\\
 	\cmidrule{2-9}
@@ -136,7 +144,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 	
 	\csvreader[head to column names, late after line=\\]
 	{Data/HyperfineRuntimeWithAvgsINTRA.csv}{}%
-	{\csvcoli&\csvcolii&\csvcoliii&\csvcoliv&\csvcolv&\csvcolvi&\csvcolvii&\csvcolviii&\csvcolix}
+	{\csvcoli&\csvcolii&\csvcoliii&\csvcoliv&\csvcolv&\csvcolvi&\csvcolvii&\csvcolviii  &\csvcolix}
 	\bottomrule
 	\end{tabular}
 	\label{tab:doop-intra-runtimes}
@@ -144,7 +152,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 
 \begin{table*}
 	\centering
-	\caption{Inter-procedural Doop analysis-only runtime after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. N/A = timed out after 90 minutes.}
+	\caption{Inter-procedural Doop analysis-only runtime (in seconds) after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. -- = timed out after 90 minutes.}
 	\begin{tabular}{@{}rrrrrrrrr} \toprule
 		Benchmark & \multicolumn{8}{c}{interproc}\\
 		\cmidrule{2-9}
