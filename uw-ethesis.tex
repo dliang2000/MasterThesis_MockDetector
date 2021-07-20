@@ -76,11 +76,25 @@
 
 \newcommand{\ra}[1]{\renewcommand{\arraystretch}{#1}}
 \usepackage{array, lscape, booktabs, makecell} % For formal tables
-
+\usepackage{xcolor}
 \usepackage{listings}
 \usepackage{pifont}% http://ctan.org/pkg/pifont
 \newcommand{\cmark}{\ding{51}}%
 \newcommand{\xmark}{\ding{55}}%
+
+\definecolor{vdarkgreen}{rgb}{0,0.3,0}
+\lstset{
+	language=Java,
+	columns=flexible,
+	numbers=left,
+	numbersep=2pt,
+	stepnumber=1,
+	keywordstyle=\color{blue},
+	tabsize=1,
+	keywordstyle=\color{blue}\bfseries,
+	commentstyle=\color{vdarkgreen},
+	stringstyle=\ttfamily\color{red!50!brown},
+	showstringspaces=false}
 
 % This package allows if-then-else control structures.
 \usepackage{ifthen}
