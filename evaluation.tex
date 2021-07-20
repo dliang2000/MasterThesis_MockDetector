@@ -82,7 +82,7 @@ We explored the performance of our 4 declarative analysis variants based on reco
 	table head=\hline Benchmark & Total Number of Invocations & Mock Invokes intraproc (Soot) 
 					& basic-only-intraproc & CI-intraproc & CIPP-intraproc & 1-object-sens-intraproc 
 					& basic-only-interproc & CI-interproc & CIPP-interproc & 1-object-sens-interproc\\\hline]%
-	{DoopAndSootMockCounts.csv}{}%
+	{Data/DoopAndSootMockCounts.csv}{}%
 	{\csvcoli&\csvcolii&\csvcoliii&\csvcoliv&\csvcolv&\csvcolvi&\csvcolvii&\csvcolviii&\csvcolix&\csvcolx&\csvcolxi}
 	\label{tab:invokes}
 \end{table*} 
@@ -112,25 +112,37 @@ We explored the performance of our 4 declarative analysis variants based on reco
 %	\label{tab:invokes}
 %\end{table*}
 
-\begin{table*}
-	\centering
-	\caption{Doop analysis-only runtime after basic-only and context-insensitive base analyses. N/A = timed out after 90 minutes.}
-	%	\begin{adjustbox}{width=0.1\textwidth}
-	\begin{tabular}{lrrrrrr}
-		\toprule
-		Benchmark & \thead{Basic-only, \\ intraproc (s)} & \thead{Context-insensitive, \\ intraproc (s)} & \thead{Basic-only, \\ interproc (s)}  & \thead{Context-insensitive, \\ interproc (s)}  \\
-		\midrule
-		bootique-2.0.B1-bootique           		& 15.71  & 16.81 &  24.26    &  20.20     \\
-		commons-collections4-4.4           		& 17.42  & 12.26 &  21.79    &  15.36        \\
-		flink-core-1.13.0-rc1           		& 24.67  & 25.30 &  71.67    &  66.10         \\
-		jsonschema2pojo-core-1.1.1         		& 25.98  & 26.27 &  42.14    &  39.21         \\
-		maven-core-3.8.1   		        	& 18.01  & 16.34 &  25.49    &  22.09          \\
-		micro-benchmark         			& 10.97  & 10.50 &  12.51    &  12.53        \\
-		mybatis-3.5.6         		  		&  N/A   & 51.25 &   N/A     & 183.86          \\
-		quartz-core-2.3.1        	  		& 17.72  & 19.83 &  22.99    &  21.14        \\
-		vraptor-core-3.5.5         	  		& 22.10  & 23.81 &  66.73    & 146.09       \\
-		\bottomrule
-	\end{tabular}
-	%	\end{adjustbox}
-	\label{tab:doop-runtimes}
-\end{table*}
+\begin{landscape}
+	\begin{table*}
+		\centering
+		\caption{Doop analysis-only runtime after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. N/A = timed out after 90 minutes.}
+		\csvreader[tabular=|r|*{16}{p{10mm}}|,%
+		table head=\hline Benchmark & basic-only-intraproc (s) & stddev & CI-intraproc (s) & stddev & CIPP-intraproc (s) & stddev & 1-object-sens-intraproc (s) & stddev & basic-only-interproc (s) & stddev & CI-interproc (s) & stddev & CIPP-interproc (s) & stddev & 1-object-sens-interproc (s) & stddev \\\hline]%
+		{Data/HyperfineRuntimeWithAvgs.csv}{}%
+		{\csvcoli&\csvcolii&\csvcoliii&\csvcoliv&\csvcolv&\csvcolvi&\csvcolvii&\csvcolviii&\csvcolix&\csvcolx&\csvcolxi&\csvcolxii&\csvcolxiii&\csvcolxiv&\csvcolxv&\csvcolxvi&\csvcolxvii}
+		\label{tab:doop-runtimes}
+	\end{table*} 
+\end{landscape}
+
+%\begin{table*}
+%	\centering
+%	\caption{Doop analysis-only runtime after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. N/A = timed out after 90 minutes.}
+%	%	\begin{adjustbox}{width=0.1\textwidth}
+%	\begin{tabular}{lrrrrrr}
+%		\toprule
+%		Benchmark & \thead{Basic-only, \\ intraproc (s)} & \thead{Context-insensitive, \\ intraproc (s)} & \thead{Basic-only, \\ interproc (s)}  & \thead{Context-insensitive, \\ interproc (s)}  \\
+%		\midrule
+%		bootique-2.0.B1-bootique           		& 15.71  & 16.81 &  24.26    &  20.20     \\
+%		commons-collections4-4.4           		& 17.42  & 12.26 &  21.79    &  15.36        \\
+%		flink-core-1.13.0-rc1           		& 24.67  & 25.30 &  71.67    &  66.10         \\
+%		jsonschema2pojo-core-1.1.1         		& 25.98  & 26.27 &  42.14    &  39.21         \\
+%		maven-core-3.8.1   		        	& 18.01  & 16.34 &  25.49    &  22.09          \\
+%		micro-benchmark         			& 10.97  & 10.50 &  12.51    &  12.53        \\
+%		mybatis-3.5.6         		  		&  N/A   & 51.25 &   N/A     & 183.86          \\
+%		quartz-core-2.3.1        	  		& 17.72  & 19.83 &  22.99    &  21.14        \\
+%		vraptor-core-3.5.5         	  		& 22.10  & 23.81 &  66.73    & 146.09       \\
+%		\bottomrule
+%	\end{tabular}
+%	%	\end{adjustbox}
+%	\label{tab:doop-runtimes}
+%\end{table*}
