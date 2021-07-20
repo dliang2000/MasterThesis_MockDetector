@@ -138,14 +138,14 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 	\centering
 	\caption{Intra-procedural Doop analysis-only runtime (in seconds) after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. -- = timed out after 90 minutes.}
 	\begin{tabular}{@{}rrrrrrrrr} \toprule
-	Benchmark & \multicolumn{8}{c}{intraproc}\\
-	\cmidrule{2-9}
-	& \thead{basic\\-only} & $\sigma$ & CI & $\sigma$ & CIPP& $\sigma$ & \thead{1-obj\\-sens} & $\sigma$ \\ \midrule 
-	
-	\csvreader[head to column names, late after line=\\]
-	{Data/HyperfineRuntimeWithAvgsINTRA.csv}{}%
-	{\csvcoli&\csvcolii&\csvcoliii&\csvcoliv&\csvcolv&\csvcolvi&\csvcolvii&\csvcolviii  &\csvcolix}
-	\bottomrule
+		Benchmark & \multicolumn{8}{c}{intraproc}\\
+		\cmidrule{2-9}
+		& \thead{basic\\-only} & $\sigma$ & CI & $\sigma$ & CIPP & $\sigma$ & \thead{1-obj\\-sens} & $\sigma$ \\ \midrule 
+		
+		\csvreader[head to column names, late after line=\\]
+		{Data/HyperfineRuntimeWithAvgsINTRA.csv}{}%
+		{\csvcoli&\csvcolii&{\scriptsize \csvcoliii}&\csvcoliv&{\scriptsize \csvcolv} &\csvcolvi&{\scriptsize \csvcolvii}&\csvcolviii &{\scriptsize \csvcolix}}
+		\bottomrule
 	\end{tabular}
 	\label{tab:doop-intra-runtimes}
 \end{table*} 
@@ -156,11 +156,11 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 	\begin{tabular}{@{}rrrrrrrrr} \toprule
 		Benchmark & \multicolumn{8}{c}{interproc}\\
 		\cmidrule{2-9}
-		& \thead{basic\\-only} & $\sigma$ & CI & $\sigma$ & CIPP& $\sigma$ & \thead{1-obj\\-sens} & $\sigma$ \\ \midrule 
+		& \thead{basic\\-only} & $\sigma$ & CI & $\sigma$ & CIPP & $\sigma$ & \thead{1-obj\\-sens} & $\sigma$ \\ \midrule 
 		
 		\csvreader[head to column names, late after line=\\]
 		{Data/HyperfineRuntimeWithAvgsINTER.csv}{}%
-		{\csvcoli&\csvcolii&\csvcoliii&\csvcoliv&\csvcolv&\csvcolvi&\csvcolvii&\csvcolviii&\csvcolix}
+		{\csvcoli&\csvcolii&{\scriptsize \csvcoliii}&\csvcoliv&{\scriptsize \csvcolv} &\csvcolvi&{\scriptsize \csvcolvii}&\csvcolviii &{\scriptsize \csvcolix}}
 		\bottomrule
 	\end{tabular}
 	\label{tab:doop-inter-runtimes}
