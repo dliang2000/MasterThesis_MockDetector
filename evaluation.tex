@@ -82,7 +82,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 \begin{table*}
 	\centering
 	\caption{Comparison of Number of InstanceInvokeExprs on Mock objects analyzed by Soot and Doop, and Total Number of InstanceInvokeExprs, in each benchmark's test suite. 0 = timed out after 90 minutes.}
-	\csvreader[tabular=|r|*{10}{p{14mm}}|,%
+	\csvreader[tabular=|l|*{10}{p{14mm}}|,%
 	table head=\hline Benchmark & Total Number of Invocations & Mock Invokes intraproc (Soot) 
 					& basic-only-intraproc & CI-intraproc & CIPP-intraproc & 1-object-sens-intraproc 
 					& basic-only-interproc & CI-interproc & CIPP-interproc & 1-object-sens-interproc\\\hline]%
@@ -120,7 +120,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 	\begin{table*}
 		\centering
 		\caption{Doop analysis-only runtime after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. N/A = timed out after 90 minutes.}
-		\csvreader[tabular=|r|*{16}{p{10mm}}|,%
+		\csvreader[tabular=|l|*{16}{p{9mm}}|,%
 		table head=\hline Benchmark & basic-only-intraproc (s) & stddev & CI-intraproc (s) & stddev & CIPP-intraproc (s) & stddev & 1-object-sens-intraproc (s) & stddev & basic-only-interproc (s) & stddev & CI-interproc (s) & stddev & CIPP-interproc (s) & stddev & 1-object-sens-interproc (s) & stddev \\\hline]%
 		{Data/HyperfineRuntimeWithAvgs.csv}{}%
 		{\csvcoli&\csvcolii&\csvcoliii&\csvcoliv&\csvcolv&\csvcolvi&\csvcolvii&\csvcolviii&\csvcolix&\csvcolx&\csvcolxi&\csvcolxii&\csvcolxiii&\csvcolxiv&\csvcolxv&\csvcolxvi&\csvcolxvii}
