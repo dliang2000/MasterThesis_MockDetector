@@ -1,0 +1,11 @@
+benchmark,basic-only-intraproc (s),stddev,CI-intraproc (s),stddev,CIPP-intraproc (s),stddev,1-object-sens-intraproc (s),stddev
+bootique,21.26,1.73,19.93,1.85,19.51,1.74,N/A,N/A
+commons-collections4,15.39,1.39,14.2,1.36,14.48,0.97,13.39,1.08
+flink-core,29.87,2.29,27.21,3.34,27.78,4.54,21.17,0.49
+jsonschema2pojo,31.72,1.44,29.33,2.33,30.72,3.52,29.35,3.69
+maven-core,20.4,0.97,19.49,1.8,16.09,1.61,15.72,1.09
+microbenchmark,13.2,0.76,11.73,0.73,11.61,0.59,12.23,1.15
+mybatis,83.29,5.57,59.83,4.07,59.76,0.59,N/A,N/A
+quartz-core,21.95,2.28,21.06,2.08,18.88,2.84,17.22,1.91
+vraptor,49.27,2.59,34.96,0.79,36.49,1.82,N/A,N/A
+Average,31.82,2.51,26.41,2.29,26.15,2.4,N/A,N/A

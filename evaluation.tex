@@ -21,7 +21,7 @@ In Section~\ref{sec:common} we discussed the implementation of our intraprocedur
 
 %--- , indicates the removal of mock invocations from call graph would improve the call graph's accuracy on method coverage for the benchmarks on the high end of the mock invocation percentage. 
 
-We explored the performance of our 8 declarative analysis variants based on recorded program facts, and present the numbers in Table~\ref{tab:doop-runtimes}. We can observe that CI and CIPP have comparable runtimes and mock invocation counts, with CI has slightly higher average runtimes, both intra-procedurally and inter-procedurally. It makes sense as CIPP is "context-insensitive with an enhancement for low-hanging fruit: methods that have their params flow to their return value get a methods that have their params flow to their return value get a 1-obj treatment”~\cite{yanniss}.
+We explored the performance of our 8 declarative analysis variants based on recorded program facts, and present the numbers in Table~\ref{tab:doop-intra-runtimes} and \ref{tab:doop-inter-runtimes}. We can observe that CI and CIPP have comparable runtimes and mock invocation counts, with CI has slightly higher average runtimes, both intra-procedurally and inter-procedurally. It makes sense as CIPP is "context-insensitive with an enhancement for low-hanging fruit: methods that have their params flow to their return value get a methods that have their params flow to their return value get a 1-obj treatment”~\cite{yanniss}.
 
 On the other hand, since 1-object-sensitive base analysis is a more sophisticated analysis, it spends much longer time on building the CHA graph, resulting in a much smaller call graph and thus has a faster execution time on actual mock analysis. 
 
@@ -82,7 +82,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 \begin{table*}
 	\ra{1.2}
 	\centering
-	\caption{Comparison of Number of InstanceInvokeExprs on Mock objects analyzed by Soot and Doop, and Total Number of InstanceInvokeExprs, in each benchmark's test suite. 0 = timed out after 90 minutes.}
+	\caption{Comparison of Number of InstanceInvokeExprs on Mock objects analyzed by Soot and Doop, and Total Number of InstanceInvokeExprs, in each benchmark's test suite. N/A = timed out after 90 minutes.}
 	
 	\begin{tabular}{@{}rrrrrrrcrrrr@{}} \toprule
 	Benchmark & \thead{Total \\ Number of \\ Invocations} & \thead{Mock Invokes \\ intraproc (Soot)}
@@ -123,17 +123,41 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 %	\label{tab:invokes}
 %\end{table*}
 
-%\begin{landscape}
-	\begin{table*}
-		\centering
-		\caption{Doop analysis-only runtime after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. N/A = timed out after 90 minutes.}
-		\csvreader[tabular=|l|*{16}{p{9mm}}|,%
-		table head=\hline Benchmark & basic-only-intraproc (s) & stddev & CI-intraproc (s) & stddev & CIPP-intraproc (s) & stddev & 1-object-sens-intraproc (s) & stddev & basic-only-interproc (s) & stddev & CI-interproc (s) & stddev & CIPP-interproc (s) & stddev & 1-object-sens-interproc (s) & stddev \\\hline]%
-		{Data/HyperfineRuntimeWithAvgs.csv}{}%
-		{\csvcoli&\csvcolii&\csvcoliii&\csvcoliv&\csvcolv&\csvcolvi&\csvcolvii&\csvcolviii&\csvcolix&\csvcolx&\csvcolxi&\csvcolxii&\csvcolxiii&\csvcolxiv&\csvcolxv&\csvcolxvi&\csvcolxvii}
-		\label{tab:doop-runtimes}
-	\end{table*} 
-%\end{landscape}
+%& & \thead{basic\\-only} & $\sigma$ & CI & $\sigma$ & CIPP & $\sigma$ & \thead{1-obj\\-sens} & $\sigma$ \\
+
+
+\begin{table*}
+	\centering
+	\caption{Intra-procedural Doop analysis-only runtime after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. N/A = timed out after 90 minutes.}
+	\begin{tabular}{@{}rrrrrrrrr} \toprule
+	Benchmark & \multicolumn{8}{c}{intraproc}\\
+	\cmidrule{2-9}
+	& \thead{basic\\-only} & $\sigma$ & CI & $\sigma$ & CIPP& $\sigma$ & \thead{1-obj\\-sens} & $\sigma$ \\ \midrule 
+	
+	\csvreader[head to column names, late after line=\\]
+	{Data/HyperfineRuntimeWithAvgsINTRA.csv}{}%
+	{\csvcoli&\csvcolii&\csvcoliii&\csvcoliv&\csvcolv&\csvcolvi&\csvcolvii&\csvcolviii&\csvcolix}
+	\bottomrule
+	\end{tabular}
+	\label{tab:doop-intra-runtimes}
+\end{table*} 
+
+\begin{table*}
+	\centering
+	\caption{Inter-procedural Doop analysis-only runtime after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. N/A = timed out after 90 minutes.}
+	\begin{tabular}{@{}rrrrrrrrr} \toprule
+		Benchmark & \multicolumn{8}{c}{interproc}\\
+		\cmidrule{2-9}
+		& \thead{basic\\-only} & $\sigma$ & CI & $\sigma$ & CIPP& $\sigma$ & \thead{1-obj\\-sens} & $\sigma$ \\ \midrule 
+		
+		\csvreader[head to column names, late after line=\\]
+		{Data/HyperfineRuntimeWithAvgsINTER.csv}{}%
+		{\csvcoli&\csvcolii&\csvcoliii&\csvcoliv&\csvcolv&\csvcolvi&\csvcolvii&\csvcolviii&\csvcolix}
+		\bottomrule
+	\end{tabular}
+	\label{tab:doop-inter-runtimes}
+\end{table*} 
+
 
 %\begin{table*}
 %	\centering
