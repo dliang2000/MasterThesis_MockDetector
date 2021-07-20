@@ -1,10 +1,10 @@
 Benchmark,Total Number of Invocations,Mock Invokes intraproc (Soot),basic-only-intraproc,CI-intraproc,CIPP-intraproc,1-object-sens-intraproc,basic-only-interproc,CI-interproc,CIPP-interproc,1-object-sens-interproc
-bootique,3366,99,99,99,99,N/A,120,122,122,N/A
+bootique,3366,99,99,99,99,--,120,122,122,--
 commons-collection4,12753,11,3,3,3,3,23,23,23,23
 flink-core,11923,40,40,40,40,40,1262,1389,1374,1229
 jsonschema2pojo-core,1896,276,282,282,282,282,462,604,604,604
 maven-core,4072,23,23,23,23,23,31,39,39,39
 microbenchmark,471,108,123,123,123,123,132,132,132,132
-mybatis,19232,575,577,577,577,N/A,644,1345,1345,N/A
+mybatis,19232,575,577,577,577,--,644,1345,1345,--
 quartz-core,3436,21,21,21,21,21,23,31,31,31
-vraptor-core,5868,942,963,962,962,N/A,1301,1630,1627,N/A
+vraptor-core,5868,942,963,962,962,--,1301,1630,1627,--
