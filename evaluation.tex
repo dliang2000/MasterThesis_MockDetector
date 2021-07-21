@@ -33,6 +33,8 @@ We can observe that CI and CIPP have comparable runtimes and mock invocation cou
 
 On the other hand, since 1-object-sensitive base analysis is a more sophisticated analysis, it spends much longer time on building the CHA graph (3 benchmarks ending up with timed out runs on building the CHA graph), resulting in a much smaller call graph and thus has a faster execution time on actual mock analysis. 
 
+We are currently investigating the performance of intra-procedural basic-only analysis, trying to understand why it would spend more time strictly on mock analysis than CI and CIPP.
+
 %the number of mock invocations correlates with the runtime; taking a bit more effort to compute a better call graph may well pay off in terms of overall analysis time. We suspect that the interprocedural analysis is especially slow for mybatis because we also analyze its 50 dependencies; that count is at the high end among our benchmarks.
 
 \begin{table*}

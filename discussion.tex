@@ -53,9 +53,16 @@ As stated above, instrumentation is easier in Soot than in Doop, and that extend
 
 \section{Future Work} 
 
+In this project, we presented two implementations for detecting mock objects and tracking mock invocations in test suites. There are multiple areas require further investigation to improve \textsc{MockDetector}'s quality:
+
+\begin{itemize}
+	\item We would like to have Soot interprocedural implementations in our tool for a more complete mock analysis. It would be useful to compare and further understand the two approaches analyzing mock objects.
+	\item We would keep investigating over the different base analyses provided by Doop framework (souffle-logic), attempting to form a hypothesis and test against it by altering the inputs.
+\end{itemize}
+
 
 \section{Summary} 
 
 We would conclude that, especially with the knowledge we have now gained about Doop, prototyping in Doop is easier than in Soot, but that it is no panacea; it remains subject to the feature interaction problem as well as debugging. Additionally, trying to add certain functional behaviours to the Doop implementation, such as timers, can be challenging.
 
-Overall, in this paper, we have described a case study of the \textsc{MockDetector} static analysis, which we intend to use for further static analyses of test cases. We have implemented \textsc{MockDetector} twice---once imperatively in Soot, and once declaratively in Doop---and characterized its performance on a test suite. Finally, we have discussed our experience implementing this analysis twice, and pointed out the benefits and disadvantages of the imperative and declarative approaches for writing static analyses.
+Overall, in this thesis, we have described a case study of the \textsc{MockDetector} static analysis, which we intend to use for further static analyses of test cases. We have implemented \textsc{MockDetector} twice---once imperatively in Soot, and once declaratively in Doop---and characterized its performance on a test suite. Finally, we have discussed our experience implementing this analysis twice, and pointed out the benefits and disadvantages of the imperative and declarative approaches for writing static analyses.
