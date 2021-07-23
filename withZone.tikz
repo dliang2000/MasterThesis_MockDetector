@@ -1,0 +1,26 @@
+\tikzstyle{block} = [rectangle, draw, 
+text width=3em, text centered, rounded corners, minimum height=2em]
+
+\begin{tikzpicture}[>=stealth',shorten >=1pt,auto,node distance=2cm,
+semithick,initial text=]
+
+\node[normal,block,text width=7em]   (A)              {\textit{Assembled-Chronology}};
+
+\node[normal, xshift=-8em, yshift=-3em, text width=6em, text centered,rounded corners] (B) [below left of=A] {\nodepart{one} \textit{Buddhist-Chronology} 
+\nodepart{two} \textit{withZone()}:\\TESTED $\checkmark$ };
+
+\node[normal, xshift=0.5em, yshift=-3em, text width=6em, text centered,rounded corners] (D) [below left of=A] {\nodepart{one} \textit{GJ-Chronology} 
+	\nodepart{two} \textit{withZone()}:\\TESTED $\checkmark$ };
+
+\node[normal,xshift=1em,text width=1em,draw=none]           (G) [below of=A] {\ldots};
+
+\node[normal, xshift=10em, yshift=-3em, text width=6.3em, text centered,rounded corners] (S) [below left of=A] {\nodepart{one} \textit{Strict-Chronology} 
+	\nodepart{two} \textit{withZone()}:\\UNTESTED~$\times$};
+
+
+\draw (B) -> (A);
+\draw (G) -> (A);
+\draw (D) -> (A);
+\draw (S) -> (A); 
+
+\end{tikzpicture} 
