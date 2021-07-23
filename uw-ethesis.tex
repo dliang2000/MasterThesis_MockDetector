@@ -131,6 +131,17 @@
     filecolor=magenta,      % color of file links
     urlcolor=cyan           % color of external links
 }
+
+\usepackage{tikz}
+\usetikzlibrary{arrows,automata,shapes,positioning}
+\tikzset{
+	normal/.style = {
+		rectangle split, 
+		rectangle split parts=2, 
+		very thick, draw=black, 
+	}
+}
+
 \ifthenelse{\boolean{PrintVersion}}{   % for improved print quality, change some hyperref options
 \hypersetup{	% override some previously defined hyperref options
 %    colorlinks,%
