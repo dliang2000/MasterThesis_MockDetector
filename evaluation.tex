@@ -36,10 +36,10 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 %the number of mock invocations correlates with the runtime; taking a bit more effort to compute a better call graph may well pay off in terms of overall analysis time. We suspect that the interprocedural analysis is especially slow for mybatis because we also analyze its 50 dependencies; that count is at the high end among our benchmarks.
 
 \begin{table*}
-	\vspace*{.5em}
 	\centering
 	\caption{Our suite of 8 open-source benchmarks (8000--117000 LOC) plus our microbenchmark. Soot and Doop analysis runtimes.}
 	%	\begin{adjustbox}{width=0.1\textwidth}
+	\vspace*{.5em}
 	\resizebox{\columnwidth}{!}{%
 	\begin{tabular}{lrrrrrr}
 		\toprule
@@ -66,6 +66,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 	\centering
 	\caption{Counts of Test-Related (Test/Before/After) methods in public concrete test classes, along with counts of mocks, mock-containing arrays, and mock-containing collections, reported by Soot intraprocedural analysis.}
 	%	\begin{adjustbox}{width=0.1\textwidth}
+	\vspace*{.5em}
 	\begin{tabular}{lrrrr}
 		\toprule
 		Benchmark & \thead{\# of Test-Related \\ Methods} & \thead{\# of Test-Related \\ Methods with \\ mocks (intra)}  & \thead{\# of Test-Related \\ Methods with \\ mock-containing\\ arrays (intra)} & \thead{\# of Test-Related \\ Methods with \\ mock-containing\\ collections (intra)} \\
@@ -90,10 +91,9 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 \begin{landscape}
 \begin{table*}
 	\ra{1.2}
-	\vspace*{.5em}
 	\centering
 	\caption{Comparison of Number of InstanceInvokeExprs on Mock objects analyzed by Soot and Doop, and Total Number of InstanceInvokeExprs, in each benchmark's test suite. ``--'' = timed out after 90 minutes.}
-	
+	\vspace*{.5em}
 	\begin{tabular}{@{}lrrrrrrcrrrr@{}} \toprule
 	Benchmark & \thead{Total \\ Number of \\ Invocations} & \thead{Mock Invokes \\ intraproc (Soot)}
 	& \multicolumn{4}{c}{intraproc} & \phantom{abc} & \multicolumn{4}{c}{interproc}
@@ -137,9 +137,9 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 
 
 \begin{table*}
-	\vspace*{.5em}
 	\centering
-	\caption{Intra-procedural Doop analysis-only runtime (in seconds) after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. \ \\ ``--'' = timed out after 90 minutes.}
+	\caption{Intra-procedural Doop analysis-only runtime (in seconds) after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. \protect\\ ``--'' = timed out after 90 minutes.}
+	\vspace*{.5em}
 	\begin{tabular}{@{}lrrrrrrrr} \toprule
 		Benchmark & \multicolumn{8}{c}{intraproc}\\
 		\cmidrule{2-9}
@@ -154,9 +154,9 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 \end{table*}
 
 \begin{table*}
-	\vspace*{.5em}
 	\centering
-	\caption{Inter-procedural Doop analysis-only runtime (in seconds) after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. \ ``--'' = timed out after 90 minutes.}
+	\caption{Inter-procedural Doop analysis-only runtime (in seconds) after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. \protect\\ ``--'' = timed out after 90 minutes.}
+	\vspace*{.5em}
 	\begin{tabular}{@{}lrrrrrrrr} \toprule
 		Benchmark & \multicolumn{8}{c}{interproc}\\
 		\cmidrule{2-9}
@@ -172,9 +172,9 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 
 
 \begin{table*}
-	\vspace*{.5em}
 	\centering
 	\caption{Total number of classes found in the call graph generated from inter-procedural Doop analysis with basic-only, context-insensitive, context-insensitive-plusplus, and 1-object-sensitive base analyses. ``--'' = timed out after 90 minutes.}
+	\vspace*{.5em}
 	\begin{tabular}{@{}lrrrr} \toprule
 		Benchmark & \thead{basic\\-only} & CI & CIPP & \thead{1-obj\\-sens} \\ \midrule 
 		
