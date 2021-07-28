@@ -33,52 +33,44 @@ We believe that the basic-only base analyses has some undesired behaviour in the
 
 
 \begin{figure}
-	\begin{lstlisting}[basicstyle=\ttfamily,
-	basicstyle=\ttfamily, numbers=none, framesep=4.5mm, framexleftmargin=1.0mm, captionpos=b, escapechar=|, framexleftmargin=1.0mm, morekeywords={@Test}]
+	\begin{lstlisting}[basicstyle=\ttfamily\scriptsize, numbers=none, framesep=4.5mm, framexleftmargin=1.0mm, captionpos=b, escapechar=|]
 	
 	Edge in Basic-only:
 	0	<org.jsonschema2pojo.rules.PatternRule: boolean 
-	isApplicableType(com.sun.codemodel.JFieldVar)>/com.sun.codemodel.JClass.fullName/0	0	<com.sun.codemodel.JType: java.lang.String fullName()>
+	isApplicableType(com.sun.codemodel.JFieldVar)>/com.sun.codemodel.JClass.fullName/0	
+	0	<com.sun.codemodel.JType: java.lang.String fullName()>
 	
 	Edges in CI:
 	<<immutable-context>>	<org.jsonschema2pojo.rules.PatternRule: 
-	boolean isApplicableType(com.sun.codemodel.JFieldVar)>
-	/com.sun.codemodel.JClass.fullName/0
-		<<immutable-context>>	<com.sun.codemodel.JTypeVar: java.lang.String fullName()>
+	boolean isApplicableType(com.sun.codemodel.JFieldVar)>/com.sun.codemodel.JClass.fullName/0
+	<<immutable-context>>	<com.sun.codemodel.JTypeVar: java.lang.String fullName()>
 	
 	<<immutable-context>>	<org.jsonschema2pojo.rules.PatternRule: 
-		boolean isApplicableType(com.sun.codemodel.JFieldVar)>
-		/com.sun.codemodel.JClass.fullName/0	
-		<<immutable-context>>	<com.sun.codemodel.JTypeWildcard: java.lang.String fullName()>
+	boolean isApplicableType(com.sun.codemodel.JFieldVar)>/com.sun.codemodel.JClass.fullName/0	
+	<<immutable-context>>	<com.sun.codemodel.JTypeWildcard: java.lang.String fullName()>
 		
 	<<immutable-context>>	<org.jsonschema2pojo.rules.PatternRule: 
-	boolean isApplicableType(com.sun.codemodel.JFieldVar)>
-	/com.sun.codemodel.JClass.fullName/0	
+	boolean isApplicableType(com.sun.codemodel.JFieldVar)>/com.sun.codemodel.JClass.fullName/0	
 	<<immutable-context>>	<com.sun.codemodel.JNarrowedClass: java.lang.String fullName()>
 	
 	<<immutable-context>>	<org.jsonschema2pojo.rules.PatternRule: 
-	boolean isApplicableType(com.sun.codemodel.JFieldVar)>
-	/com.sun.codemodel.JClass.fullName/0	
+	boolean isApplicableType(com.sun.codemodel.JFieldVar)>/com.sun.codemodel.JClass.fullName/0	
 	<<immutable-context>>	<com.sun.codemodel.JArrayClass: java.lang.String fullName()>
 	
 	<<immutable-context>>	<org.jsonschema2pojo.rules.PatternRule: 
-	boolean isApplicableType(com.sun.codemodel.JFieldVar)>
-	/com.sun.codemodel.JClass.fullName/0	
+	boolean isApplicableType(com.sun.codemodel.JFieldVar)>/com.sun.codemodel.JClass.fullName/0	
 	<<immutable-context>>	<com.sun.codemodel.JDefinedClass: java.lang.String fullName()>
 	
 	<<immutable-context>>	<org.jsonschema2pojo.rules.PatternRule: 
-	boolean isApplicableType(com.sun.codemodel.JFieldVar)>
-	/com.sun.codemodel.JClass.fullName/0	
+	boolean isApplicableType(com.sun.codemodel.JFieldVar)>/com.sun.codemodel.JClass.fullName/0	
 	<<immutable-context>>	<com.sun.codemodel.JDirectClass: java.lang.String fullName()>
 	
 	<<immutable-context>>	<org.jsonschema2pojo.rules.PatternRule: 
-	boolean isApplicableType(com.sun.codemodel.JFieldVar)>
-	/com.sun.codemodel.JClass.fullName/0	
-	<<immutable-context>>	<com.sun.codemodel.JCodeModel\$JReferencedClass: 
-	java.lang.String fullName()>
+	boolean isApplicableType(com.sun.codemodel.JFieldVar)>/com.sun.codemodel.JClass.fullName/0	
+	<<immutable-context>>	<com.sun.codemodel.JCodeModel\$JReferencedClass: java.lang.String fullName()>
 	
 	\end{lstlisting}
-	\caption{The call graph edges to a sibling method \textit{fullName()} from .}
+	\caption{The call graph edges to the method \textit{fullName()} from both basic-only and context-insensitive base analyses. The method is declared in abstract class \texttt{com.sun.codemodel.JType} and implemented in its children classes.}
 	\label{fig:edgesToSiblingMethod}
 	
 \end{figure}
@@ -149,7 +141,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 \begin{table*}
 	\ra{1.2}
 	\centering
-	\caption{Comparison of Number of InstanceInvokeExprs on Mock objects analyzed by Soot and Doop, and Total Number of InstanceInvokeExprs, in each benchmark's test suite. ``--'' = timed out after 90 minutes. Runs include mybatis, basic-only and flink-core, 1-object-sensitive may also timed out.}
+	\caption{Comparison of Number of InstanceInvokeExprs on Mock objects analyzed by Soot and Doop, and Total Number of InstanceInvokeExprs, in each benchmark's test suite. ``--''~=~timed out after 90 minutes. Experiments include [mybatis, basic-only] and [flink-core, 1-object-sensitive] takes close to 90 minutes and sometimes time out.}
 	\vspace*{.5em}
 	\begin{tabular}{@{}lrrcrrrrcrrrr@{}} \toprule
 	Benchmark & \thead{Total \\ Number of \\ Invocations} & \thead{Mock Invokes \\ intraproc (Soot)}
@@ -195,7 +187,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 
 \begin{table*}
 	\centering
-	\caption{Intra-procedural Doop analysis-only runtime (in seconds) after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. \protect\\ ``--'' = timed out after 90 minutes. Runs include mybatis, basic-only and flink-core, 1-object-sensitive may also timed out.}
+	\caption{Intra-procedural Doop analysis-only runtime (in seconds) after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. \protect\\ ``--''~=~timed out after 90 minutes. Experiments include [mybatis, basic-only] and [flink-core, 1-object-sensitive] takes close to 90 minutes and sometimes time out.}
 	\vspace*{.5em}
 	\begin{tabular}{@{}lrrrrrrrr} \toprule
 		Benchmark & \multicolumn{8}{c}{intraproc}\\
@@ -212,7 +204,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 
 \begin{table*}
 	\centering
-	\caption{Inter-procedural Doop analysis-only runtime (in seconds) after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. \protect\\ ``--'' = timed out after 90 minutes. Runs include mybatis, basic-only and flink-core, 1-object-sensitive may also timed out.}
+	\caption{Inter-procedural Doop analysis-only runtime (in seconds) after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. \protect\\ ``--''~=~timed out after 90 minutes. Experiments include [mybatis, basic-only] and [flink-core, 1-object-sensitive] takes close to 90 minutes and sometimes time out.}
 	\vspace*{.5em}
 	\begin{tabular}{@{}lrrrrrrrr} \toprule
 		Benchmark & \multicolumn{8}{c}{interproc}\\
@@ -230,7 +222,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 
 \begin{table*}
 	\centering
-	\caption{Call graph statistics: total number of source classes and target classes from inter-procedural Doop analysis with basic-only, context-insensitive, context-insensitive-plusplus, and 1-object-sensitive base analyses. ``--'' = timed out after 90 minutes. Runs include mybatis, basic-only and flink-core, 1-object-sensitive may also timed out.}
+	\caption{Call graph statistics: total number of source classes and target classes from inter-procedural Doop analysis with basic-only, context-insensitive, context-insensitive-plusplus, and 1-object-sensitive base analyses. ``--''~=~timed out after 90 minutes. Experiments include [mybatis, basic-only] and [flink-core, 1-object-sensitive] takes close to 90 minutes and sometimes time out.}
 	\vspace*{.5em}
 	\begin{tabular}{@{}lrrrrcrrrr} \toprule
 		Benchmark & \multicolumn{4}{c}{Source Classes} & \phantom{abc} & \multicolumn{4}{c}{Target Classes}
@@ -247,7 +239,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 
 \begin{table*}
 	\centering
-	\caption{Call graph statistics: total number of source classes that are application classes (i.e., excluding classes from dependencies or libraries) and total number of target classes reached from application classes from inter-procedural Doop analysis with basic-only, context-insensitive, context-insensitive-plusplus, and 1-object-sensitive base analyses. ``--'' = timed out after 90 minutes. Runs include mybatis, basic-only and flink-core, 1-object-sensitive may also timed out.}
+	\caption{Call graph statistics: total number of source classes that are application classes (i.e., excluding classes from dependencies or libraries) and total number of target classes reached from application classes by inter-procedural Doop analysis with basic-only, context-insensitive, context-insensitive-plusplus, and 1-object-sensitive base analyses. ``--''~=~timed out after 90 minutes. Experiments include [mybatis, basic-only] and [flink-core, 1-object-sensitive] takes close to 90 minutes and sometimes time out.}
 	\vspace*{.5em}
 	\begin{tabular}{@{}lrrrrcrrrr} \toprule
 		Benchmark & \multicolumn{4}{c}{Source Classes} & \phantom{abc} & \multicolumn{4}{c}{Target Classes}
