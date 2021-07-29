@@ -84,7 +84,7 @@ add(java.lang.Object)>(r3);
 
 %% In this example, $\$r1$ is the immediate receiver from Mockito's mock creation site, whereas $r2$ is the casted expression that gets carried along in the subsequent program. Thus, our tool would include the immediate receivers, and the casted expressions of mock objects into the generation set, in two steps. 
 
-\subsection{Arrays and containers}
+\subsection{Arrays and Containers}
 
 To be explicit about our treatment of arrays and containers: at a read from an array into a local variable, where the source array is mock-containing, we declare that the local destination is a mock. At a write of a local variable into an array, where the local variable is mock-containing, we declare that the array is mock-containing.
 
@@ -151,7 +151,7 @@ private RuleFactory ruleFactory
 // ...
 \end{lstlisting}
 
-\subsection{Interprocedural support} 
+\subsection{Interprocedural Support} 
 
 The Heros framework\cite{bodden12:_inter_proced_data_flow_analy} implements IFDS/IDE for program analysis frameworks including Soot. With some effort, it would be possible to rewrite our mock analysis with Heros; however, this would be a more involved process than in the declarative case, where we simply added two rules. In particular, Heros uses a different API in its implementation than Soot. Conceptually, though, it should be no harder to implement an interprocedural Heros analysis than an intraprocedural Soot dataflow analysis.
 
@@ -203,7 +203,7 @@ The predicates \texttt{AssignReturnValue}, \texttt{AssignCast}, and \texttt{Assi
 
 We designed the analysis in a modular fashion, such that the interprocedural, collections, arrays, and fields support can all be disabled through the use of \verb+#ifdef+s, which can be specified on the Doop command-line.
 
-\subsection{Interprocedural support} 
+\subsection{Interprocedural Support} 
 
 From our perspective, including (context-insensitive) interprocedural support is almost trivial; we only need to add two rules
 \begin{lstlisting}[basicstyle=\ttfamily\small,numbers=none]

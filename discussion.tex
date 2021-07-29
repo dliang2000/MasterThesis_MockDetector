@@ -8,11 +8,11 @@
 
 Having described our imperative and declarative approaches to implementing mock analysis, we now comment on the strengths and weaknesses of these two approaches. We hope that our discussion will help future designers of source code analyses and frameworks.
 
-\section{Subsequent use of results} 
+\section{Subsequent Use of Results} 
 
 Doop is a standalone tool. It depends on other tools to provide input, but provides output in the form of \texttt{csv} files, whose content can be matched to the program source, if a subsequent analysis has the appropriate internal representation. On the other hand, Soot is a compiler framework. Thus, using the Soot analysis results in a subsequent compilation phase is quite easy. Doop works quite well for producing analysis results, and not quite as well for using these results in a compilation process. Our Soot analysis also doesn't need to process the whole program for itself to produce the analysis results that we're interested in here---our intraprocedural analysis can use the existing in-memory representation and pass it on to the next phase, while Doop reads the whole program, throws it away, and leaves nothing for the next compilation phase. 
 
-\section{Expressiveness vs concision}
+\section{Expressiveness vs Concision}
 
 In~\cite{bravenboer09:_stric_declar_specif_sophis_point_analy}, Bravenboer and Smaragdakis point out that:
 \begin{quote}
@@ -33,7 +33,7 @@ Another difference between the declarative and imperative versions is in the sup
 
 It is easier to add instrumentation, e.g. timers, to the imperative version than the declarative version. Doop contains some built-in timers, but it is unclear how to add new ones.
 
-\section{Development velocity}
+\section{Development Velocity}
 
 To help the reader calibrate our descriptions, we describe our experience levels with Soot and Doop. I initially have little Soot experience, developed the Soot implementation through countless hours of testing and debugging, and take guidance and suggestion from my supervisor, who is an early code contributor to the Soot framework. My supervisor, the co-author of the submitted conference research paper, developed the Doop implementation.
 
