@@ -1,10 +1,5 @@
 %======================================================================
-\chapter[Motivating Examples]{Motivating Examples\footnote{The contents of this 
-		chapter have been incorporated within a paper that has been submitted for
-		publication. Qian Liang and Patrick Lam, “MockDetector: Detecting and 
-		tracking mock objects in unit tests”.
-		Submitted to 21st IEEE International Working Conference on 
-		Source Code Analysis and Manipulation. Submission date June. 30, 2021}}
+\chapter{Motivating Examples}
 \label{chap:motivating-example}
 %====================================================================== 
 
@@ -12,7 +7,6 @@ In this chapter, we illustrate how \textsc{MockDetector} finds variables contain
 
 \section{Preliminary Research}
 
-\setcounter{footnote}{0}
 \begin{figure}[h]
 	\centering
 	\input{withZone.tikz}
@@ -20,6 +14,7 @@ In this chapter, we illustrate how \textsc{MockDetector} finds variables contain
 	\label{fig:hierarchyView}
 \end{figure}
 
+\setcounter{footnote}{1}
 \footnotetext{The content of this figure have been incorporated within a NIER paper published by IEEE in 2020 IEEE International Conference on Software Maintenance and Evolution (ICSME), available online: https://ieeexplore.ieee.org/xpl/conhome/9240597/proceeding[doi: 10.1109/ICSME46990.2020.00075]. Qian Liang and Patrick Lam, "SiblingClassTestDetector: Finding Untested Sibling Functions"}
 
 Prior to the development for \textsc{MockDetector}, we were working on a project to detect untested functions that have analogous implementations in sibling classes (they share a common superclass), where at least one of the related implementations are tested. The overall goal of that project is to reduce untested code. Though testing could not guarantee desired program behaviour, developers certainly know nothing about any untested code. Since the sibling methods share the same specification, it is likely that a unit test case covering for one sibling class's implementation may also work for the untested after small modifications, potentially increasing the statement coverage and consequently having a better chance to gain behavioural insight of the benchmark.
