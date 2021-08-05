@@ -70,8 +70,7 @@ The copy-related rules also apply to mock-containing arrays and collections. We 
 // r2 is in the in set as a mock
 r1[0] = r2;
 // r3 is in the in set as a mock
-$r4.<java.util.ArrayList: boolean
-add(java.lang.Object)>(r3);
+$r4.<java.util.ArrayList: boolean add(java.lang.Object)>(r3);
 \end{lstlisting}
 
 % nah, we say that above now.
@@ -139,10 +138,8 @@ Listing~\ref{lis:fieldMock} depicts an example where instance fields are initial
 \begin{lstlisting}[basicstyle=\ttfamily, caption={Example for field mocks defined by field initializations from \texttt{TypeRuleTest.java} in jsonschema2pojo.},
 basicstyle=\ttfamily,language = Java, framesep=4.5mm,
 framexleftmargin=1mm, captionpos=b, label=lis:fieldMock]
-private GenerationConfig config
-= mock(GenerationConfig.class);
-private RuleFactory ruleFactory
-= mock(RuleFactory.class);
+private GenerationConfig config = mock(GenerationConfig.class);
+private RuleFactory ruleFactory = mock(RuleFactory.class);
 // ...
 \end{lstlisting}
 
