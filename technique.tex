@@ -10,6 +10,9 @@ We present two complementary ways of statically computing mock information: an i
 \section{High Level Definition}
 \label{sec:high-level}
 
+Similarly to the dataflow analysis,
+the declarative approach propagates mockness from known mock sources, through the statements in the intermediate representation, to potential mock invocation sites.
+
 \section{Imperative Soot Implementation}
 \label{sec:soot}
 We first describe the Soot-based imperative dataflow analysis to find mock invocation sites. Our tool tracks information from the creation sites through the control-flow graph using a forward dataflow may-analysis---an object is declared a mock if there exists some execution path where it may receive a mock value. Our implementation also understands containers like arrays and collections, and tracks whether containers hold any mock objects. The abstraction marks all contents of collections as potential mocks if it observes any mock object being put into the array or container.
