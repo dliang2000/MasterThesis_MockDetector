@@ -47,7 +47,7 @@ Our dataflow analysis uses fairly standard gen and kill sets in the flow functio
 
 First, the gen set includes pre-analyzed fields containing mock objects defined via annotation (e.g. \texttt{@Mock}), inside a constructor \texttt{<init>}, or in JUnit's \texttt{@Before}/\texttt{setUp()} methods. We discuss the pre-analysis below in Section~\ref{subsec:pre-analysis}. 
 
-Second, it includes local variables assigned from mock-creation source methods, which consist of Mockito\footnote{\url{https://site.mockito.org/}}'s \textit{java.lang.Object mock(java.lang.Class)}, EasyMock\footnote{\url{https://easymock.org/}}'s \textit{java.lang.Object createMock(java.lang.Class)}, and PowerMock\footnote{\url{https://github.com/powermock/powermock}}'s \textit{java.lang.Object mock(java.lang.Class)}:
+Second, it includes local variables assigned from mock-creation source methods, which consist of Mockito's \textit{java.lang.Object mock(java.lang.Class)}, EasyMock's \textit{java.lang.Object createMock(java.lang.Class)}, and PowerMock's \textit{java.lang.Object mock(java.lang.Class)}:
 \begin{lstlisting}[basicstyle=\ttfamily\small,numbers=none]
 X x = mock(X);
 \end{lstlisting}
