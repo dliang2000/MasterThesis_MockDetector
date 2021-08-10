@@ -153,7 +153,7 @@ private RuleFactory ruleFactory = mock(RuleFactory.class);
 
 \subsection{Interprocedural Support} 
 
-The Heros framework\cite{bodden12:_inter_proced_data_flow_analy} implements inter-procedural, finite, distributive subset (IFDS)/inter-procedural distributive environment (IDE) for program analysis frameworks including Soot. With some effort, it would be possible to rewrite our mock analysis with Heros; however, this would be a more involved process than in the declarative case, where we simply added two rules. In particular, Heros uses a different API in its implementation than Soot. Conceptually, though, it should be no harder to implement an interprocedural Heros analysis than an intraprocedural Soot dataflow analysis.
+The Heros framework\cite{bodden12:_inter_proced_data_flow_analy} implements IFDS/interprocedural distributive environment (IDE) for program analysis frameworks including Soot. With some effort, it would be possible to rewrite our mock analysis with Heros; however, this would be a more involved process than in the declarative case, where we simply added two rules. In particular, Heros uses a different API in its implementation than Soot. Conceptually, though, it should be no harder to implement an interprocedural Heros analysis than an intraprocedural Soot dataflow analysis.
 
 % not necessary here. you can add it to your thesis.
 %% \begin{lstlisting}[basicstyle=\ttfamily, caption={Example for field mocks defined in a \texttt{@Before} method.},

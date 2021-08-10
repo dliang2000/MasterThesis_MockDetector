@@ -1,0 +1,32 @@
+%======================================================================
+\chapter{Background}
+\label{chap:background}
+%====================================================================== 
+
+\section{Dataflow Analysis}
+
+Dataflow analysis is normally performed on top of a program's control flow graph (CFG). A CFG is a directed graph with each node stands for a statement in the program (the statement could be an assignment statement, an if statement, etc.), and the set of directed edges represents the overall control flow of the program.
+
+Dataflow analysis, meanwhile, is a process of computing and gathering all the facts at each program point (i.e., each node in the CFG). The facts would usually be a mapping between program variables and the abstractions specifically defined to solve the problem at hand. 
+
+For each dataflow problem, researchers or developers usually make two decisions before implementations. First, they would decide if the problem should be categorized as a forward or backward dataflow problem. For a forward dataflow analysis, the facts propagate along the direction of the control flow. On the other hand, the facts propagate in the opposite direction from the control flow in a backward dataflow analysis. (Few dataflow problems may require bidirectional flows.)
+
+Researchers or developers also need to decide on if it is a may or must dataflow problem. The core difference between the two types of problems is how they handle the facts at all the join points in the program, where multiple branches meet. A may dataflow analysis keeps facts that hold true on any joined path, whereas a must dataflow analysis only keeps facts that hold true from all the branches.
+
+Dataflow analysis is an imperative approach when solving a problem. It focuses on the ``HOW" part of the solution, providing a set of commands or operations to tackle the problem.
+
+\subsection{Soot}
+
+Among all the dataflow analysis tools, Soot~\cite{Vallee-Rai:1999:SJB:781995.782008} is a representative, IFDS-based Java optimization framework (where IFDS stands for Interprocedural, finite, distributive, subset problems), which provides a total of four types of intermediate representations to analyze Java bytecode. 
+
+An intermediate representation (IR) is an abstract language designed for machines with no specifications. A good IR is independent of the source and target languages, and thus convenient to translate into code for the retargetable architecture.
+
+For our project, we use Jimple (Java's simple), which is a stackless, typed 3-address IR in the CFG.
+
+\section{Declarative Analysis}
+
+While an imperative approach focuses on the "HOW" component of a solution, declarative analysis foc
+
+\subsection{Doop}
+
+\section{Mock Objects} 
