@@ -11,9 +11,15 @@ Dataflow analysis~\cite{kildall73:_unified_approac_global_progr_optim} is normal
 
 Dataflow analysis, meanwhile, is a fixed point algorithm that computes and gathers all the facts at each program point (i.e., each node in the CFG). The facts would usually be a mapping between program variables and the abstractions specifically defined to solve the problem at hand. The most important decision for a dataflow analysis is the abstraction and associated flow functions to update the abstraction at each program point.
 
-Researchers or developers need to make two additional decisions before implementations. First, they would decide if the problem should be categorized as a forward or backward dataflow problem. For a forward dataflow analysis, the facts propagate along the direction of the control flow. Determining whether expressions are available (i.e. have already been computed) at each program point is a type of forward dataflow problem. On the other hand, the facts propagate in the opposite direction from the control flow in a backward dataflow analysis, and most importantly, we need to access the future usage of the variables. Analyzing the liveness of variables is a known backward dataflow problem. (Few dataflow problems may require bidirectional flows.)
+\paragraph{Forward vs. Backward} Researchers or developers need to make two additional decisions before implementations. First, they would decide if the problem should be categorized as a forward or backward dataflow problem. For a forward dataflow analysis, the facts propagate along the direction of the control flow. Determining whether expressions are available (i.e. have already been computed) at each program point is a type of forward dataflow problem. On the other hand, the facts propagate in the opposite direction from the control flow in a backward dataflow analysis, and most importantly, we need to access the future usage of the variables. Analyzing the liveness of variables is a known backward dataflow problem. (Few dataflow problems may require bidirectional flows.)
 
-Researchers or developers also need to decide on if it is a may or must dataflow problem. The core difference between the two types of problems is how they handle the facts at all the join points in the program, where multiple branches meet. A may dataflow analysis keeps facts that hold true on any joined path. "Reaching Definitions" is a may analysis problem. It checks if a definition (or assignment) of a variable reaches a specific program point. On the other hand, must dataflow analysis only keeps facts that hold true from all the branches. Determining available expressions is also a must analysis problem.
+\paragraph{May vs. Must} Researchers or developers also need to decide on if it is a may or must dataflow problem. The core difference between the two types of problems is how they handle the facts at all the join points in the program, where multiple branches meet. A may dataflow analysis keeps facts that hold true on any joined path. ``Reaching Definitions" is a may analysis problem. It checks if a definition (or assignment) of a variable reaches a specific program point. On the other hand, must dataflow analysis only keeps facts that hold true from all the branches. Determining available expressions is also a must analysis problem.
+
+\paragraph{Gen and Kill Set} All dataflow analyses requires a transfer function of some kind. Generally, the actions on the dataflow analysis domain are often called ``gen" and ``kill" in practice at each program point. The gen set contains new facts that are now true at the program point, whereas the kill set gathers all the old facts that are now false. When we have sets of facts, we remove facts found in the kill set, while add new facts introduced by the gen set. The flow function describing such process are of the form
+
+\begin{equation}
+out(s) = gen(s) \bigcup (in(s)  \backslash  kill(s))
+\end{equation}
 
 Dataflow analyses are usually implemented imperatively, which focuses on the ``HOW" part of the solution, providing a set of commands or operations to tackle the problem.
 
@@ -21,9 +27,11 @@ Dataflow analyses are usually implemented imperatively, which focuses on the ``H
 
 Among all the dataflow analysis tools, Soot~\cite{Vallee-Rai:1999:SJB:781995.782008} is a representative Java optimization framework, which provides a total of four types of intermediate representations to analyze Java bytecode. 
 
-An intermediate representation (IR) is an abstract language designed for machines with no specifications. A good IR is independent of the source and target languages, and thus convenient to translate into code for the retargetable architecture.
+An intermediate representation (IR) is an abstract language designed for ease of analysis and transformation. A good IR is independent of the source and target languages, and thus convenient to translate into code for retargetable architectures.
 
 For our project, we use Jimple (simple Java), which is a stackless, typed 3-address IR in the CFG.
+
+Heros~\cite{bodden12:_inter_proced_data_flow_analy} is an inter-procedural, finite, distributive subset problems (IFDS) / interprocedural distributive environment (IDE) solver that provides interprocedural support to the Soot framework.
 
 \section{Declarative Analysis}
 
@@ -33,9 +41,9 @@ A declarative approach normally comes with an underlying imperative layer, where
 
 \subsection{Doop}
 
-We choose Doop among many declarative frameworks for our project. It comes with a batch of base ``analyses expressed in the form of Datalog rules"~\cite{doop-repo}. The current version uses Soufflé\footnote{\url{https://souffle-lang.github.io/docs.html}} as the datalog engines for analyses rules.
+We choose Doop~\cite{bravenboer09:_stric_declar_specif_sophis_point_analy} as the declarative framework for our project. It comes with a number of implementations solving the constraints stated in the declarative form. The current version of Doop uses Soufflé\footnote{\url{https://souffle-lang.github.io/docs.html}} as the Datalog engine for analyses rules.
 
-Since Doop is a declarative framework, its underlying imperative layer is the auto-generated input facts from Soot framework, which consequently imported to Doop's database. These input facts are then processed by the implemented datalog rules (on top of the selected Soufflé base analysis). Doop also computes fixed points like any dataflow analysis tools.
+Doop takes as input facts generated by Soot (imported into a database) as well as declarative Datalog rules. It then asks Soufflé to solve the rules on the inputs. Doop also computes fixed points by embedding them in the constraints it gives to the constraint solver.
 
 
 \section{Mock Objects} 
@@ -44,6 +52,6 @@ Mock objects are commonly used in unit test cases. They substitute for the real 
 
 Imagine you want to test the behaviour of a detonator. It is infeasible to always test the detonator's behaviour with a real bomb, also sometimes there is no bomb available. So in this scenario, you build a mock bomb. The mock bomb does not do anything other than checks whether it has received instructions to explode. Note that in the whole process, you are testing the detonator's behaviour, not the mock bomb's behaviour.\footnote{The idea of this example is sparked from \url{https://stackoverflow.com/questions/28783722/when-using-mokito-what-is-the-difference-between-the-actual-object-and-the-mock?noredirect=1&lq=1}.}
 
-The current static analysis tools, however, could not differentiate a mock object and a real object, because the two objects' IR are essentially of the same type. Section~\ref{sec:toy-example} runs a toy example and explains why the current tools are incompetent in locating mock objects.
+The current static analysis tools, however, could not differentiate a mock object and a real object, because the containing variables have the same type in Java and in the IR. Section~\ref{sec:toy-example} runs a toy example and explains why the current tools are incompetent in locating mock objects.
 
 For our project, we consider for Java mock source methods from three mocking frameworks: EasyMock\footnote{\url{https://easymock.org/}}, Mockito\footnote{\url{https://site.mockito.org/}}, and PowerMock\footnote{\url{https://github.com/powermock/powermock}}. According to a prior study~\cite{mostafa14:_empirical_study_mock_frameworks}, EasyMock and Mockito are used in about 90\% of the 5,000 randomly sampled projects. We then added a third mocking framework by our own choice. Thus, we believe our analysis results should be applicable to most of the Java benchmarks. 
