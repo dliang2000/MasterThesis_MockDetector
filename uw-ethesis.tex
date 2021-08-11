@@ -82,6 +82,7 @@
 \usepackage{pifont}% http://ctan.org/pkg/pifont
 \newcommand{\cmark}{\ding{51}}%
 \newcommand{\xmark}{\ding{55}}%
+\newcommand{\highlightInListing}[1]{\textbf{\textcolor[rgb]{1,0.41,0.13}{#1}}}
 
 \definecolor{vdarkgreen}{rgb}{0,0.3,0}
 \lstset{
@@ -89,6 +90,7 @@
 	columns=flexible,
 	numbers=left,
 	numbersep=2pt,
+	numberstyle=\scriptsize,
 	stepnumber=1,
 	keywordstyle=\color{blue},
 	tabsize=1,
