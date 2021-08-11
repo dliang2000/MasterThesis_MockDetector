@@ -10,6 +10,30 @@ Table~\ref{tab:runtimes} presents summary information about our benchmarks and r
 
 \section{Qualitative Evaluation}
 
+Since the process of pinpointing focal methods in test suites is still done through manual inspection (instead of collecting method calls in unit test cases, justifying focal methods would require more screening and reasoning), we perform a qualitative evaluation of our \textsc{MockDetector} tool in removing mock invocations from focal method consideration.
+
+\begin{figure}
+	\begin{lstlisting}[
+	basicstyle=\ttfamily,language = Java, framesep=4.5mm, framexleftmargin=1.0mm, captionpos=b, escapechar={|}, mathescape=true, morekeywords={@Test}]
+	@Test
+	public void testMisconfiguredToolchain() throws Exception {
+		//        			   								mockAPI: |\cmark|
+		MavenSession session = |\color{red}mock| ( MavenSession.class );
+		MavenExecutionRequest req = new DefaultMavenExecutionRequest();
+		//     mock invocation: |\cmark| $\rightarrow$ focal method: |\xmark|
+		when( session.|\color{red}getRequest()| ).thenReturn( req ); |\label{line:mock}|
+		
+		ToolchainPrivate[] basics =
+		//     					 						focal method: |\cmark|
+			toolchainManager.|\color{red}getToolchainsForType|("basic", session); |\label{line:real}|
+		
+		assertEquals( 0, basics.length );
+	}
+	\end{lstlisting}
+	
+	\caption{Qualitative Evaluation of removing mock invocation from focal method consideration.}
+	\label{fig:mockExampleEvaluation}
+\end{figure}
 
 \section{Prevalence of Mocks}
 
