@@ -9,11 +9,11 @@ Static analysis techniques are an important tool for code analysis, especially w
 
 Dataflow analysis is normally performed on top of a program's control flow graph (CFG). A CFG is a directed graph with each node stands for a statement in the program (the statement could be an assignment statement, an if statement, etc.), and the set of directed edges represents the overall control flow of the program.
 
-Dataflow analysis, meanwhile, is a process of computing and gathering all the facts at each program point (i.e., each node in the CFG). The facts would usually be a mapping between program variables and the abstractions specifically defined to solve the problem at hand. 
+Dataflow analysis, meanwhile, is a fixed point algorithm that computes and gathers all the facts at each program point (i.e., each node in the CFG). The facts would usually be a mapping between program variables and the abstractions specifically defined to solve the problem at hand. 
 
-For each dataflow problem, researchers or developers usually make two decisions before implementations. First, they would decide if the problem should be categorized as a forward or backward dataflow problem. For a forward dataflow analysis, the facts propagate along the direction of the control flow. On the other hand, the facts propagate in the opposite direction from the control flow in a backward dataflow analysis. (Few dataflow problems may require bidirectional flows.)
+For each dataflow problem, researchers or developers usually make two decisions before implementations. First, they would decide if the problem should be categorized as a forward or backward dataflow problem. For a forward dataflow analysis, the facts propagate along the direction of the control flow. Determining whether expressions are available at each program point is a type of forward dataflow problem. On the other hand, the facts propagate in the opposite direction from the control flow in a backward dataflow analysis, and most importantly, we need to access the future usage of the variables. Analyzing the liveness of variables is a known backward dataflow problem. (Few dataflow problems may require bidirectional flows.)
 
-Researchers or developers also need to decide on if it is a may or must dataflow problem. The core difference between the two types of problems is how they handle the facts at all the join points in the program, where multiple branches meet. A may dataflow analysis keeps facts that hold true on any joined path, whereas a must dataflow analysis only keeps facts that hold true from all the branches.
+Researchers or developers also need to decide on if it is a may or must dataflow problem. The core difference between the two types of problems is how they handle the facts at all the join points in the program, where multiple branches meet. A may dataflow analysis keeps facts that hold true on any joined path. "Reaching Definitions" is a may analysis problem. It checks if a definition (or assignment) of a variable reaches a specific program point. On the other hand, must dataflow analysis only keeps facts that hold true from all the branches. Determining available expressions is also a must analysis problem.
 
 Dataflow analysis is an imperative approach when solving a problem. It focuses on the ``HOW" part of the solution, providing a set of commands or operations to tackle the problem.
 
@@ -35,7 +35,7 @@ It worths noting that a declarative approach normally comes with an underlying i
 
 We choose Doop among many declarative frameworks for our project. It comes with a batch of base ``analyses expressed in the form of Datalog rules"~\cite{doop-repo}. The current version uses Soufflé\footnote{\url{https://souffle-lang.github.io/docs.html}} as the datalog engines for analyses rules.
 
-Since Doop is a declarative framework, its underlying imperative layer is the auto-generated input facts from Soot framework, which consequently imported to Doop's database. These input facts are then processed by the implemented datalog rules (on top of the selected Soufflé base analysis).
+Since Doop is a declarative framework, its underlying imperative layer is the auto-generated input facts from Soot framework, which consequently imported to Doop's database. These input facts are then processed by the implemented datalog rules (on top of the selected Soufflé base analysis). Doop also computes fixed points like any dataflow analysis tools.
 
 
 \section{Mock Objects} 
