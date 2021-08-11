@@ -86,6 +86,52 @@ $r4.<java.util.ArrayList: boolean add(java.lang.Object)>(r3);
 
 %% In this example, $\$r1$ is the immediate receiver from Mockito's mock creation site, whereas $r2$ is the casted expression that gets carried along in the subsequent program. Thus, our tool would include the immediate receivers, and the casted expressions of mock objects into the generation set, in two steps. 
 
+\subsection{Toy Example Revisit - Soot Implementation}
+\label{subsec:toy-example-soot}
+
+Let us now revisit the toy example first introduced in Section~\ref{sec:toy-example}. 
+
+Figure~\ref{fig:mockExample} shows how our dataflow analysis works. At the top of the Jimple IR in Listing~\ref{lis:mockExampleIR}, we begin with an empty abstraction (no mapping for any values, equivalent to all bits false for each value) before line~\ref{line:lis3line3}. For the creation of \texttt{\$r1} on line~\ref{line:lis3line3} and~\ref{line:lis3line4}, since the call to the no-arg \texttt{<init>} constructor is not one of our hardcoded mock APIs, our analysis does not declare \texttt{\$r1} to be a mock object. In practice, our abstraction simply does not create an explicit binding for \texttt{\$r1}, instead leaving the mapping empty as it was prior to line~\ref{line:lis3line3}; but it would be equivalent to create a new \texttt{MockStatus} with all bits false and bind it to \texttt{\$r1}. Thus, we may conclude that the invocation \texttt{object1.foo()} on line 5 in Figure~\ref{fig:mockExample} is not known to be a mock invocation. Tying back to our focal methods application, we would not exclude the call to \texttt{foo()} from being a possible focal method.
+
+\begin{figure}
+	\begin{lstlisting}[basicstyle=\ttfamily,
+	basicstyle=\ttfamily,language = Java, framesep=4.5mm, framexleftmargin=1.0mm, captionpos=b, escapechar=|, morekeywords={@Test}]
+	//        mock: |\xmark~\,|    mockAPI: |\xmark|
+	Object object1 = new Object();
+	
+	// mock: |\xmark|
+	object1.foo();
+	
+	//        mock: |\cmark|     mockAPI: |\cmark|
+	Object object2 = mock(Object.class);
+	
+	// mock: |\cmark|
+	object2.foo();
+	\end{lstlisting}
+	%    \includegraphics[width=.25\textwidth]{Images/mockInvocationIllustration.png}
+	
+	\caption{Our static analysis propagates mockness from sources (e.g. \texttt{mock(Object.class}) to invocations.}
+	\label{fig:mockExample}
+	
+\end{figure}
+
+On the other hand, our imperative analysis sees the mock-creation source methods \\ \texttt{<org.mockito.Mockito: java.lang.Object mock(java.lang.Class)>} on line~\ref{line:lis41line7} and~\ref{line:lis41line8} in the Jimple IR. It thus adds a mapping from local variable \texttt{r2} to a new \texttt{MockStatus} with the mock bit set to true. When the analysis reaches line~\ref{line:lis41line10}, because \texttt{r2} has a mapping in the abstraction with the mock bit being set, \textsc{MockDetector} will deduce that the call on line~\ref{line:lis41line10} is a mock invocation. This implies that the call to method \textit{foo()} on line 11 in Figure~\ref{fig:mockExample} cannot be a focal method.
+
+
+\begin{lstlisting}[basicstyle=\ttfamily, caption={Jimple Intermediate Representation for the code in Figure~\ref{fig:mockExample}.},
+basicstyle=\ttfamily, captionpos=b, label=lis:mockExampleIR, escapechar=|, morekeywords={@Test, specialinvoke, virtualinvoke, staticinvoke}]
+java.lang.Object $r1, r2;
+
+$r1 = new java.lang.Object; |\label{line:lis41line3}|
+specialinvoke $r1.<java.lang.Object: void <init>()>(); |\label{line:lis41line4}|
+virtualinvoke $r1.<java.lang.Object: void foo()>(); |\label{line:lis41line5}|
+
+r2 = staticinvoke <org.mockito.Mockito: |\label{line:lis41line7}|
+				java.lang.Object mock(java.lang.Class)> |\label{line:lis41line8}|
+				(class "Ljava/lang/Object;");
+virtualinvoke r2.<java.lang.Object: void foo()>(); |\label{line:lis41line10}|
+\end{lstlisting}
+
 \subsection{Arrays and Containers}
 
 To be explicit about our treatment of arrays and containers: at a read from an array into a local variable where the source array is mock-containing, we declare that the local destination is a mock. At a write of a local variable into an array where the local variable is mock-containing, we declare that the array is mock-containing.
@@ -103,6 +149,39 @@ To be explicit about our treatment of arrays and containers: at a read from an a
 We treat collections analogously. However, while there is one API for arrays---the Java bytecode array load and array store instructions---Java's Collections APIs include, by our count, 60 relevant methods, which we discuss further in Section~\ref{sec:common}. For our purposes here, we use our classification of collection methods to identify collection reads and writes and handle them as we do array reads and writes, except that we say that it is a mock-containing collection, not a mock-containing array.
 
 % The main difference is Java's \texttt{Collection} interface has multiple implementations, which expose different APIs for objects. \textsc{MockDetector} resolves this problem with a manually-constructed pool of read and write method APIs associated with each sub-type of the interface \texttt{java.util.Collection}. It subsequently checks (using the hierarchy) whether collection classes appear in statements containing invoke expression. This is achieved by first determining the declaring class of the invoked method. If the declaring class is of an interface, \textsc{MockDetector} would check whether \texttt{java.util.Collection} is a super-interface for the declaring class. Otherwise, if the declaring class is of a class type, \textsc{MockDetector} would check whether \texttt{java.util.Collection} is a super-interface for any of declaring class's implemented interfaces. If a collection sub-type container is presented, \textsc{MockDetector} would then check if a STORE effect is applied to the container, indicating some object is to be stored in the container. Once the object is determined to be a mock, the collection container variable would immediately be labelled as a collection mock, setting the relevant bit in the abstraction to true. Reversely, if a LOAD effect is applied to the container labelled as a collection mock, the object retrieved from the container will be labelled a mock, and setting the mock bit in the abstraction to true.
+
+\subsubsection{Mock-containing Array Toy Example}
+
+Figure~\ref{fig:arrayMockIllustration} illustrates the process of identifying a mock-containing array, and Listing~\ref{lis:arrayIllustrationIR} displays the Jimple IR of the code in Figure~\ref{fig:arrayMockIllustration}. Our analysis reaches the mock API call on line~\ref{line:lis4line4}--\ref{line:lis4line6}, where it records that \texttt{\$r2} is a mock object---it creates a MockStatus abstraction object with mock bit set to 1 and associates that object with \texttt{\$r2}. The tool then handles the cast expression assigning to \texttt{r1} on line~\ref{line:lis4line7}, giving it the same MockStatus as \texttt{\$r2}. When the analysis reaches line~\ref{line:lis4line9}, it finds an array reference on the left hand side, along with \texttt{r1} stored in the array on the right-hand side of the assignment statement. At that point, it has a MockStatus associated with \texttt{r1}, with the mock bit turned on. It can now deduce that \texttt{\$r3} on the left-hand side is an array container which may hold a mock object. Therefore, \textsc{MockDetector}'s imperative static analysis associates \texttt{\$r3} with a MockStatus with mock-containing array bit (``arrayMock'') set to 1.
+
+\begin{figure}
+	\begin{lstlisting}[
+	basicstyle=\ttfamily,language = Java, framesep=4.5mm, framexleftmargin=1.0mm, captionpos=b, escapechar=|, morekeywords={@Test}]
+	//        mock: |\cmark|     mockAPI: |\cmark|
+	Object object1 = createMock(Object.class);
+	
+	// arrayMock: |\cmark| |$\Leftarrow$| array-write    |~~|  mock: |\cmark|
+	objects  |~~|           = new Object[]  |~|  { object1 };
+	\end{lstlisting}
+	
+	\caption{Our static analysis also finds array mocks.}
+	\label{fig:arrayMockIllustration}
+	
+\end{figure}
+
+
+\begin{lstlisting}[basicstyle=\ttfamily, caption={Jimple Intermediate Representation for the array in Figure~\ref{fig:arrayMockIllustration}.},
+basicstyle=\ttfamily, framesep=4.5mm, framexleftmargin=1.0mm, captionpos=b, label=lis:arrayIllustrationIR, escapechar=|, morekeywords={@Test, specialinvoke, virtualinvoke, staticinvoke, newarray}]
+java.lang.Object r1, $r2;
+java.lang.Object[] $r3;
+
+$r2 = staticinvoke <org.easymock.EasyMock: |\label{line:lis4line4}|
+java.lang.Object createMock(java.lang.Class)>
+(class "java.lang.Object;"); |\label{line:lis4line6}|
+r1 = (java.lang.Object) $r2; |\label{line:lis4line7}|
+$r3 = newarray (java.lang.Object)[1]; |\label{line:lis4line8}|
+$r3[0] = r1;  |\label{line:lis4line9}|
+\end{lstlisting}
 
 \subsection{Pre-Analyses for Field Mocks Defined in Constructors and Before Methods}
 \label{subsec:pre-analysis}
@@ -202,6 +281,30 @@ The predicates \texttt{AssignReturnValue}, \texttt{AssignCast}, and \texttt{Assi
 
 We designed the analysis in a modular fashion, such that the interprocedural, collections, arrays, and fields support can all be disabled through the use of \verb+#ifdef+s, which can be specified on the Doop command-line.
 
+\subsection{Toy Example Revisit - Doop Implementation}
+\label{subsec:toy-example-doop}
+
+Again referring to Jimple Listing~\ref{lis:mockExampleIR}, this time we ask whether the invocation on Jimple line~\ref{line:lis41line10} satisfies predicate \texttt{isMockInvocation} (facts Listing~\ref{lis:facts}, line~\ref{line:facts-imi}), which we define to hold the analysis result---namely, all mock invocation sites in the program. It does, because of facts lines~\ref{line:facts-vmi}--\ref{line:facts-imv}: Jimple line~\ref{line:lis41line10} contains a virtual method invocation, and the receiver object \texttt{r2} for the invocation on that line satisfies our predicate \texttt{isMockVar}, which holds all mock-containing variables in the program (Section~\ref{sec:dec-doop} provides more details). Predicate \texttt{isMockVar} holds because of lines~\ref{line:facts-arv}--\ref{line:facts-cms}: \texttt{r2} satisfies \texttt{isMockVar} because Jimple line~\ref{line:lis41line7} assigns \texttt{r2} the return value from mock source method \texttt{createMock} (facts line~\ref{line:facts-arv}), and the call to \texttt{createMock} satisfies predicate \texttt{callsMockSource} (facts line~\ref{line:facts-cms}), which requires that the call destination \texttt{createMock} be enumerated as a constant in our 1-ary relation \texttt{MockSourceMethod} (facts line~\ref{line:facts-msm}), and that there be a call graph edge between the method invocation at line~\ref{line:lis41line7} and the mock source method (facts line~\ref{line:facts-cge}).
+
+
+\begin{lstlisting}[basicstyle=\ttfamily, caption={Facts about invocation \texttt{r2.foo()} in method \texttt{test}.},
+basicstyle=\ttfamily, framesep=4.5mm, framexleftmargin=1.0mm, captionpos=b, label=lis:facts, escapechar=!, morekeywords={@Test}]
+isMockInvocation(<Object: void foo()>/test/0, 
+<Object: void foo()>, test, _. r2). !\label{line:facts-imi}!
+|VirtualMethodInvocation(<Object: void foo()>/test/0, !\label{line:facts-vmi}!
+|                        <Object: void foo()>, test).
+|VirtualMethodInvocation_Base(<Object: void foo()>/test/0, 
+|                                  r2).
+|isMockVar(r2). !\label{line:facts-imv}!
+|-AssignReturnValue(<Mockito: Object mock(Class)>/test/0, !\label{line:facts-arv}!
+|                        r2). 
+|-callsMockSource(<Mockito: Object mock(Class)>/test/0). !\label{line:facts-cms}!
+|MockSourceMethod(<Mockito: Object mock(Class)>). !\label{line:facts-msm}!
+|CallGraphEdge(_, <Mockito: Object mock(Class)>/test/0, _, !\label{line:facts-cge}!
+|              <Mockito: Object mock(Class)>). 
+\end{lstlisting}
+
+
 \subsection{Interprocedural Support} 
 
 From our perspective, including (context-insensitive) interprocedural support is almost trivial; we only need to add two rules
@@ -275,7 +378,7 @@ Call graphs are useful to our intraprocedural analysis in two ways: first, becau
 
 \subsection{Mock Libraries}
 
-Our supported mock libraries take different approaches to instantiating mocks. All of the libraries have methods that generate mock objects; for instance, EasyMock contains the \texttt{createMock()} method. We consider return values from these methods to be mock objects. Additionally, Mockito contains a fluent \texttt{verify()} method which returns a mock object. Finally, Mockito also allows developers to mark fields as \texttt{@Mock}; we treat reads from such fields as mock objects. Both implementations start the analysis with these hard coded facts on mock source methods, as described in the mock libraries' documentation.
+Our supported mock libraries take different approaches to instantiating mocks. All of the libraries have methods that generate mock objects; for instance, EasyMock contains the \texttt{createMock()} method. We consider return values from these methods to be mock objects. Additionally, Mockito contains a fluent \texttt{verify()} method which returns a mock object. Finally, Mockito and EasyMock also allow developers to mark fields as \texttt{@Mock}; we treat reads from such fields as mock objects. Both implementations start the analysis with these hard coded facts on mock source methods, as described in the mock libraries' documentation.
 
 \subsection{Containers}
 
