@@ -18,6 +18,8 @@ Figure~\ref{fig:mockExample2Evaluation} displays the second example. The unit te
 
 Both Soot and Doop implementations identify all the field mocks, and consequently report three mock invocations from the test case. They have also successfully outputs the Invoke Expressions or the corresponding call-graph edges for the three mock invocations: \texttt{getContentType()}, \texttt{deserializerFor()}, and \texttt{unsupportedMediaType()}. With more manual inspection, we could deduce that \texttt{intercept()} on Line~\ref{line:focal-method} is the focal method.
 
+Both examples qualitatively demonstrate that our \textsc{MockDetector} tool can help remove mock invocations from focal method considerations, and consequently assist for more accurate focal method findings. We discuss about building an automated focal method analysis tool in Section~\ref{sec:future-work}.
+
 \begin{figure}[h]
 	\begin{lstlisting}[
 	basicstyle=\ttfamily,language = Java, framesep=4.5mm, framexleftmargin=1.0mm, captionpos=b, escapechar={|}, mathescape=true, morekeywords={@Test}]
