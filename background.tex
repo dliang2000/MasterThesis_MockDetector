@@ -15,10 +15,10 @@ Dataflow analysis, meanwhile, is a fixed point algorithm that computes and gathe
 
 \paragraph{May vs. Must} Researchers or developers also need to decide on if it is a may or must dataflow problem. The core difference between the two types of problems is how they handle the facts at all the join points in the program, where multiple branches meet. A may dataflow analysis keeps facts that hold true on any joined path. ``Reaching Definitions" is a may analysis problem. It checks if a definition (or assignment) of a variable reaches a specific program point. On the other hand, must dataflow analysis only keeps facts that hold true from all the branches. Determining available expressions is also a must analysis problem.
 
-\paragraph{Gen and Kill Set} All dataflow analyses requires a transfer function of some kind. Generally, the actions on the dataflow analysis domain are often called ``gen" and ``kill" in practice at each program point. The gen set contains new facts that are now true at the program point, whereas the kill set gathers all the old facts that are now false. When we have sets of facts, we remove facts found in the kill set, while add new facts introduced by the gen set. The flow function describing such process are of the form
+\paragraph{Gen and Kill Set} All dataflow analyses requires a transfer function of some kind for each program point. Generally, the actions on the dataflow analysis domain are often called ``gen" and ``kill". When we have set of facts at each statement, the kill action removes the facts that are no long true from the set, while the gen action adds new facts that are now true. The flow function describing such process are of the form
 
 \begin{equation}
-out(s) = gen(s) \bigcup (in(s)  \backslash  kill(s))
+out(s) = gen(s) \bigcup (in(s)  \setminus  kill(s))
 \end{equation}
 
 Dataflow analyses are usually implemented imperatively, which focuses on the ``HOW" part of the solution, providing a set of commands or operations to tackle the problem.
