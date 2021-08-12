@@ -8,15 +8,15 @@ In this chapter, we perform a qualitative evaluation of our \textsc{MockDetector
 
 \section{Qualitative Evaluation}
 
-We plan to reproduce Ghafari's algorithm~\cite{ghafari15:_autom} to automatically identify focal methods. Before its implementation in place, we employ manual inspection for focal method findings. Hence, we perform a qualitative evaluation over our \textsc{MockDetector} tool in removing mock invocations from focal method consideration.
+We plan to reproduce Ghafari's algorithm~\cite{ghafari15:_autom} to automatically identify focal methods. However, first, before implementing it, we use manual inspection to evaluate how useful it is to remove mocks from consideration as focal methods. We present two examples in this section to showcase how our tool eliminates method invocations that are definitely not focal methods.
 
-First, let us revisit the example first discussed in Section~\ref{sec:running-example}. Figure~\ref{fig:mockExampleEvaluation} shows the process of locating the mock object \texttt{session} and consequently the mock invocation \texttt{getRequest()} in the example. Both Soot and Doop implementations report one mock invocation from the test case. Soot outputs the Invoke Expression for \texttt{getRequest()}, whereas Doop outputs the corresponding call-graph edge in the isMockInvocation.csv file. With the assistance of \textsc{MockDetector}, we could remove \texttt{getRequest()} from the call-graph and consequently from the focal method consideration. With more screening and reasoning, we can conclude that \texttt{getToolchainsForType()} is the focal method of the test case.
+First, let us revisit the example first discussed in Section~\ref{sec:running-example}. Figure~\ref{fig:mockExampleEvaluation} shows the process of locating the mock object \texttt{session} and consequently the mock invocation \texttt{getRequest()} in the example. Both Soot and Doop implementations report one mock invocation from the test case. Soot outputs the Invoke Expression for \texttt{getRequest()}, whereas Doop outputs the corresponding call-graph edge in the isMockInvocation.csv file. With the assistance of \textsc{MockDetector}, we could remove \texttt{getRequest()} from focal method consideration. We judge \texttt{getToolchainsForType()} to be the focal method because it is the only method invocation remaining after the elimination process. 
 
 Figure~\ref{fig:mockExample2Evaluation} displays the second example. The unit test case is selected from benchmark \textsc{vraptor-core}. It has multiple mock invocations, with the field mock objects defined via the mock annotations. 
 
-Both Soot and Doop implementations identify all the field mocks, and consequently report three mock invocations from the test case. They have also successfully outputs the Invoke Expressions or the corresponding call-graph edges for the three mock invocations: \texttt{getContentType()}, \texttt{deserializerFor()}, and \texttt{unsupportedMediaType()}. With more manual inspection, we could deduce that \texttt{intercept()} on Line~\ref{line:focal-method} is the focal method.
+Both Soot and Doop implementations identify all the field mocks, and consequently report three mock invocations from the test case. They also successfully output the Invoke Expressions or the corresponding call-graph edges for the three mock invocations: \texttt{getContentType()}, \texttt{deserializerFor()}, and \texttt{unsupportedMediaType()}. By a process of elimination, we could deduce that \texttt{intercept()} on Line~\ref{line:focal-method} is the focal method. 
 
-Both examples qualitatively demonstrate that our \textsc{MockDetector} tool can help remove mock invocations from focal method considerations, and consequently assist for more accurate focal method findings.
+Both examples qualitatively demonstrate that our \textsc{MockDetector} tool can help remove invocations on mocks from consideration as focal methods, thus making it easier to identify focal methods. We believe our tool could augment the precision of Ghafari's algorithm. We could also potentially construct a novel elimination-based algorithm. Such an algorithm might be better since it considers more methods that are actually focal methods, like sophisticated getters.
 
 \begin{figure}[h]
 	\begin{lstlisting}[
@@ -26,7 +26,7 @@ Both examples qualitatively demonstrate that our \textsc{MockDetector} tool can 
 		//        			   	mockAPI:|\cmark|
 		MavenSession session = |\colorbox{teal}{mock}| ( MavenSession.class );
 		MavenExecutionRequest req = new DefaultMavenExecutionRequest();
-		//     mock invocation:|\cmark| $\rightarrow$ focal method:|\xmark|
+		//     mock invocation:|\cmark| $\Rightarrow$ focal method:|\xmark|
 		when( session.|\colorbox{red}{getRequest()}| ).thenReturn( req ); |\label{line:mock}|
 		
 		ToolchainPrivate[] basics =
@@ -70,14 +70,14 @@ Both examples qualitatively demonstrate that our \textsc{MockDetector} tool can 
 	
 	@Test
 	public void willSetHttpStatusCode415IfThereIsNoDeserializerButIsAccepted() throws Exception {
-		//     mock invocation:|\cmark| $\rightarrow$ focal method:|\xmark|
+		//     mock invocation:|\cmark| $\Rightarrow$ focal method:|\xmark|
 		when( request.|\colorbox{red}{getContentType()}| ).thenReturn("application/xml");
-		//     		mock invocation:|\cmark| $\rightarrow$ focal method:|\xmark|
+		//     		mock invocation:|\cmark| $\Rightarrow$ focal method:|\xmark|
 		when( deserializers.|\colorbox{red}{deserializerFor}|("application/xml", container) ).thenReturn(null);
 		
 		//       focal method:|\cmark|
 		interceptor.|\colorbox{gray}{intercept}|(stack, consumeXml, null); |\label{line:focal-method}|
-		//     		mock invocation:|\cmark| $\rightarrow$ focal method:|\xmark|
+		//     		mock invocation:|\cmark| $\Rightarrow$ focal method:|\xmark|
 		verify(status).|\colorbox{red}{unsupportedMediaType}|("Unable to handle media type [application/xml]: no deserializer found.");
 		verifyZeroInteractions(stack);
 	}
