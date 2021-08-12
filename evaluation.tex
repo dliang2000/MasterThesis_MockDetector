@@ -3,14 +3,12 @@
 \label{chap:evaluation}	
 %====================================================================== 
 
-We have evaluated \textsc{MockDetector} on 8 open-source benchmarks, along with a micro-benchmark that we developed to test our tool. We ran all of our experiments on a 32-core Intel(R) Xeon(R) CPU E5-4620 v2 at 2.60GHz with 128GB of RAM running Ubuntu 16.04.7 LTS.
-
-Table~\ref{tab:runtimes} presents summary information about our benchmarks and runtimes, namely the LOC and Soot and Doop analysis run-times for each benchmark. The 9 benchmarks include over 383 kLOC, with 184 kLOC in the test suites, as measured by SLOCCount\footnote{\url{https://dwheeler.com/sloccount/}}. The Soot total time is the amount of time that it takes for Soot to analyze the benchmark and test suite in whole-program mode, including our analyses. The Soot intraprocedural analysis time is the sum of runtimes for the main analysis plus two pre-analyses, as described in Section~\ref{sec:soot}. Meanwhile, the reported Doop runtime is from the context-insensitive analysis, while the Doop analysis time for intraprocedural mock invocation analysis is for running the analysis alone based on recorded facts from the benchmark. The total Doop run-time is much slower than the total Soot run-time because Doop always computes a call-graph, which is an expensive operation. We believe that the Doop analysis-only time is also slower because it computes a solution over the entire program, as opposed to Soot, which works one method at a time.
 %The major difference between the Doop's total runtime and the actual time spent on mock invocation analysis comes from the build of the complete graph. %Add reference for SLOCCount.
+In this chapter, we perform a qualitative evaluation of our \textsc{MockDetector} tool in assisting for focal method findings, as well as a quantitative evaluation of the tool in identifying mock objects and finding invocations. We compare the performance and run-time between our Soot and Doop implementations. In addition, we also investigate over four types of base analyses used by Doop, and their effect in mock object findings and efficiencies.
 
 \section{Qualitative Evaluation}
 
-Since the process of pinpointing focal methods in test suites is still done through manual inspection (instead of collecting method calls in unit test cases, justifying focal methods would require more screening and reasoning), we perform a qualitative evaluation over our \textsc{MockDetector} tool in removing mock invocations from focal method consideration.
+We plan to reproduce Ghafari's algorithm~\cite{ghafari15:_autom} to automatically identify focal methods. Before its implementation in place, we employ manual inspection for focal method findings. Hence, we perform a qualitative evaluation over our \textsc{MockDetector} tool in removing mock invocations from focal method consideration.
 
 First, let us revisit the example first discussed in Section~\ref{sec:running-example}. Figure~\ref{fig:mockExampleEvaluation} shows the process of locating the mock object \texttt{session} and consequently the mock invocation \texttt{getRequest()} in the example. Both Soot and Doop implementations report one mock invocation from the test case. Soot outputs the Invoke Expression for \texttt{getRequest()}, whereas Doop outputs the corresponding call-graph edge in the isMockInvocation.csv file. With the assistance of \textsc{MockDetector}, we could remove \texttt{getRequest()} from the call-graph and consequently from the focal method consideration. With more screening and reasoning, we can conclude that \texttt{getToolchainsForType()} is the focal method of the test case.
 
@@ -18,7 +16,7 @@ Figure~\ref{fig:mockExample2Evaluation} displays the second example. The unit te
 
 Both Soot and Doop implementations identify all the field mocks, and consequently report three mock invocations from the test case. They have also successfully outputs the Invoke Expressions or the corresponding call-graph edges for the three mock invocations: \texttt{getContentType()}, \texttt{deserializerFor()}, and \texttt{unsupportedMediaType()}. With more manual inspection, we could deduce that \texttt{intercept()} on Line~\ref{line:focal-method} is the focal method.
 
-Both examples qualitatively demonstrate that our \textsc{MockDetector} tool can help remove mock invocations from focal method considerations, and consequently assist for more accurate focal method findings. We discuss about building an automated focal method analysis tool in Section~\ref{sec:future-work}.
+Both examples qualitatively demonstrate that our \textsc{MockDetector} tool can help remove mock invocations from focal method considerations, and consequently assist for more accurate focal method findings.
 
 \begin{figure}[h]
 	\begin{lstlisting}[
@@ -88,6 +86,12 @@ Both examples qualitatively demonstrate that our \textsc{MockDetector} tool can 
 	\caption{Example 2: Qualitative evaluation of removing multiple mock invocations from focal method consideration.}
 	\label{fig:mockExample2Evaluation}
 \end{figure}
+
+\section{Description of Benchmark Suite}
+
+We have evaluated \textsc{MockDetector} on 8 open-source benchmarks, along with a micro-benchmark that we developed to test our tool. We ran all of our experiments on a 32-core Intel(R) Xeon(R) CPU E5-4620 v2 at 2.60GHz with 128GB of RAM running Ubuntu 16.04.7 LTS.
+
+Table~\ref{tab:runtimes} presents summary information about our benchmarks and runtimes, namely the LOC and Soot and Doop analysis run-times for each benchmark. The 9 benchmarks include over 383 kLOC, with 184 kLOC in the test suites, as measured by SLOCCount\footnote{\url{https://dwheeler.com/sloccount/}}. The Soot total time is the amount of time that it takes for Soot to analyze the benchmark and test suite in whole-program mode, including our analyses. The Soot intraprocedural analysis time is the sum of runtimes for the main analysis plus two pre-analyses, as described in Section~\ref{sec:soot}. Meanwhile, the reported Doop runtime is from the context-insensitive analysis, while the Doop analysis time for intraprocedural mock invocation analysis is for running the analysis alone based on recorded facts from the benchmark. The total Doop run-time is much slower than the total Soot run-time because Doop always computes a call-graph, which is an expensive operation. We believe that the Doop analysis-only time is also slower because it computes a solution over the entire program, as opposed to Soot, which works one method at a time.
 
 \section{Prevalence of Mocks}
 
