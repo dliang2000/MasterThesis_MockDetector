@@ -10,29 +10,81 @@ Table~\ref{tab:runtimes} presents summary information about our benchmarks and r
 
 \section{Qualitative Evaluation}
 
-Since the process of pinpointing focal methods in test suites is still done through manual inspection (instead of collecting method calls in unit test cases, justifying focal methods would require more screening and reasoning), we perform a qualitative evaluation of our \textsc{MockDetector} tool in removing mock invocations from focal method consideration.
+Since the process of pinpointing focal methods in test suites is still done through manual inspection (instead of collecting method calls in unit test cases, justifying focal methods would require more screening and reasoning), we perform a qualitative evaluation over our \textsc{MockDetector} tool in removing mock invocations from focal method consideration.
 
-\begin{figure}
+First, let us revisit the example first discussed in Section~\ref{sec:running-example}. Figure~\ref{fig:mockExampleEvaluation} shows the process of locating the mock object \texttt{session} and consequently the mock invocation \texttt{getRequest()} in the example. Both Soot and Doop implementations report one mock invocation from the test case. Soot outputs the Invoke Expression for \texttt{getRequest()}, whereas Doop outputs the corresponding call-graph edge in the isMockInvocation.csv file. With the assistance of \textsc{MockDetector}, we could remove \texttt{getRequest()} from the call-graph and consequently from the focal method consideration. With more screening and reasoning, we can conclude that \texttt{getToolchainsForType()} is the focal method of the test case.
+
+Figure~\ref{fig:mockExample2Evaluation} displays the second example. The unit test case is selected from benchmark \textsc{vraptor-core}. It has multiple mock invocations, with the field mock objects defined via the mock annotations. 
+
+Both Soot and Doop implementations identify all the field mocks, and consequently report three mock invocations from the test case. They have also successfully outputs the Invoke Expressions or the corresponding call-graph edges for the three mock invocations: \texttt{getContentType()}, \texttt{deserializerFor()}, and \texttt{unsupportedMediaType()}. With more manual inspection, we could deduce that \texttt{intercept()} on Line~\ref{line:focal-method} is the focal method.
+
+\begin{figure}[h]
 	\begin{lstlisting}[
 	basicstyle=\ttfamily,language = Java, framesep=4.5mm, framexleftmargin=1.0mm, captionpos=b, escapechar={|}, mathescape=true, morekeywords={@Test}]
 	@Test
 	public void testMisconfiguredToolchain() throws Exception {
-		//        			   								mockAPI: |\cmark|
-		MavenSession session = |\color{red}mock| ( MavenSession.class );
+		//        			   	mockAPI:|\cmark|
+		MavenSession session = |\colorbox{teal}{mock}| ( MavenSession.class );
 		MavenExecutionRequest req = new DefaultMavenExecutionRequest();
-		//     mock invocation: |\cmark| $\rightarrow$ focal method: |\xmark|
-		when( session.|\color{red}getRequest()| ).thenReturn( req ); |\label{line:mock}|
+		//     mock invocation:|\cmark| $\rightarrow$ focal method:|\xmark|
+		when( session.|\colorbox{red}{getRequest()}| ).thenReturn( req ); |\label{line:mock}|
 		
 		ToolchainPrivate[] basics =
-		//     					 						focal method: |\cmark|
-			toolchainManager.|\color{red}getToolchainsForType|("basic", session); |\label{line:real}|
+		//     					 	focal method:|\cmark|
+				toolchainManager.|\colorbox{gray}{getToolchainsForType}|("basic", session); |\label{line:real}|
 		
 		assertEquals( 0, basics.length );
 	}
 	\end{lstlisting}
 	
-	\caption{Qualitative Evaluation of removing mock invocation from focal method consideration.}
+	\caption{Example 1: Qualitative evaluation of removing one mock invocation from focal method consideration.}
 	\label{fig:mockExampleEvaluation}
+\end{figure}
+
+
+\begin{figure}[p]
+	\begin{lstlisting}[
+	basicstyle=\fontsize{10}{12}\ttfamily, language = Java, framesep=4.5mm, framexleftmargin=1.0mm, captionpos=b, escapechar={|}, mathescape=true, morekeywords={@Test}]
+	// Fields used in the unit test case
+	private DeserializingInterceptor interceptor;
+	// mock annotation:|\cmark|
+	|\colorbox{teal}{@Mock}| private HttpServletRequest request;
+	// mock annotation:|\cmark|
+	|\colorbox{teal}{@Mock}| private InterceptorStack stack;
+	// mock annotation:|\cmark|
+	|\colorbox{teal}{@Mock}| Deserializers deserializers;
+	private MethodInfo methodInfo;
+	// mock annotation:|\cmark|
+	|\colorbox{teal}{@Mock}| Container container;
+	// mock annotation:|\cmark|
+	|\colorbox{teal}{@Mock}| private Status status;
+	
+	@Before
+	public void setUp() throws Exception {
+		MockitoAnnotations.initMocks(this);
+		
+		methodInfo = new DefaultMethodInfo();
+		interceptor = new DeserializingInterceptor(request, deserializers, methodInfo, container, status);
+	}
+	
+	
+	@Test
+	public void willSetHttpStatusCode415IfThereIsNoDeserializerButIsAccepted() throws Exception {
+		//     mock invocation:|\cmark| $\rightarrow$ focal method:|\xmark|
+		when( request.|\colorbox{red}{getContentType()}| ).thenReturn("application/xml");
+		//     		mock invocation:|\cmark| $\rightarrow$ focal method:|\xmark|
+		when( deserializers.|\colorbox{red}{deserializerFor}|("application/xml", container) ).thenReturn(null);
+		
+		//       focal method:|\cmark|
+		interceptor.|\colorbox{gray}{intercept}|(stack, consumeXml, null); |\label{line:focal-method}|
+		//     		mock invocation:|\cmark| $\rightarrow$ focal method:|\xmark|
+		verify(status).|\colorbox{red}{unsupportedMediaType}|("Unable to handle media type [application/xml]: no deserializer found.");
+		verifyZeroInteractions(stack);
+	}
+	\end{lstlisting}
+	
+	\caption{Example 2: Qualitative evaluation of removing multiple mock invocations from focal method consideration.}
+	\label{fig:mockExample2Evaluation}
 \end{figure}
 
 \section{Prevalence of Mocks}
