@@ -120,16 +120,16 @@ On the other hand, our imperative analysis sees the mock-creation source methods
 
 \begin{lstlisting}[basicstyle=\ttfamily, caption={Jimple Intermediate Representation for the code in Figure~\ref{fig:mockExample}.},
 basicstyle=\ttfamily, captionpos=b, label=lis:mockExampleIR, escapechar=|, morekeywords={@Test, specialinvoke, virtualinvoke, staticinvoke}]
-java.lang.Object $r1, r2;
-
-$r1 = new java.lang.Object; |\label{line:lis41line3}|
-specialinvoke $r1.<java.lang.Object: void <init>()>(); |\label{line:lis41line4}|
-virtualinvoke $r1.<java.lang.Object: void foo()>(); |\label{line:lis41line5}|
-
-r2 = staticinvoke <org.mockito.Mockito: |\label{line:lis41line7}|
-				java.lang.Object mock(java.lang.Class)> |\label{line:lis41line8}|
-				(class "Ljava/lang/Object;");
-virtualinvoke r2.<java.lang.Object: void foo()>(); |\label{line:lis41line10}|
+	java.lang.Object $r1, r2;
+	
+	$r1 = new java.lang.Object; |\label{line:lis41line3}|
+	specialinvoke $r1.<java.lang.Object: void <init>()>(); |\label{line:lis41line4}|
+	virtualinvoke $r1.<java.lang.Object: void foo()>(); |\label{line:lis41line5}|
+	
+	r2 = staticinvoke <org.mockito.Mockito: |\label{line:lis41line7}|
+					java.lang.Object mock(java.lang.Class)> |\label{line:lis41line8}|
+					(class "Ljava/lang/Object;");
+	virtualinvoke r2.<java.lang.Object: void foo()>(); |\label{line:lis41line10}|
 \end{lstlisting}
 
 \subsection{Arrays and Containers}
@@ -172,15 +172,15 @@ Figure~\ref{fig:arrayMockIllustration} illustrates the process of identifying a 
 
 \begin{lstlisting}[basicstyle=\ttfamily, caption={Jimple Intermediate Representation for the array in Figure~\ref{fig:arrayMockIllustration}.},
 basicstyle=\ttfamily, framesep=4.5mm, framexleftmargin=1.0mm, captionpos=b, label=lis:arrayIllustrationIR, escapechar=|, morekeywords={@Test, specialinvoke, virtualinvoke, staticinvoke, newarray}]
-java.lang.Object r1, $r2;
-java.lang.Object[] $r3;
-
-$r2 = staticinvoke <org.easymock.EasyMock: |\label{line:lis4line4}|
-java.lang.Object createMock(java.lang.Class)>
-(class "java.lang.Object;"); |\label{line:lis4line6}|
-r1 = (java.lang.Object) $r2; |\label{line:lis4line7}|
-$r3 = newarray (java.lang.Object)[1]; |\label{line:lis4line8}|
-$r3[0] = r1;  |\label{line:lis4line9}|
+	java.lang.Object r1, $r2;
+	java.lang.Object[] $r3;
+	
+	$r2 = staticinvoke <org.easymock.EasyMock: |\label{line:lis4line4}|
+	java.lang.Object createMock(java.lang.Class)>
+	(class "java.lang.Object;"); |\label{line:lis4line6}|
+	r1 = (java.lang.Object) $r2; |\label{line:lis4line7}|
+	$r3 = newarray (java.lang.Object)[1]; |\label{line:lis4line8}|
+	$r3[0] = r1;  |\label{line:lis4line9}|
 \end{lstlisting}
 
 \subsection{Pre-Analyses for Field Mocks Defined in Constructors and Before Methods}
@@ -225,9 +225,8 @@ Listing~\ref{lis:fieldMock} depicts an example where instance fields are initial
 \begin{lstlisting}[basicstyle=\ttfamily, caption={Example for field mocks defined by field initializations from \texttt{TypeRuleTest.java} in jsonschema2pojo.},
 basicstyle=\ttfamily,language = Java, framesep=4.5mm,
 framexleftmargin=1mm, captionpos=b, label=lis:fieldMock]
-private GenerationConfig config = mock(GenerationConfig.class);
-private RuleFactory ruleFactory = mock(RuleFactory.class);
-// ...
+	private GenerationConfig config = mock(GenerationConfig.class);
+	private RuleFactory ruleFactory = mock(RuleFactory.class);
 \end{lstlisting}
 
 \subsection{Interprocedural Support} 
@@ -289,19 +288,19 @@ Again referring to Jimple Listing~\ref{lis:mockExampleIR}, this time we ask whet
 
 \begin{lstlisting}[basicstyle=\ttfamily, caption={Facts about invocation \texttt{r2.foo()} in method \texttt{test}.},
 basicstyle=\ttfamily, framesep=4.5mm, framexleftmargin=1.0mm, captionpos=b, label=lis:facts, escapechar=!, morekeywords={@Test}]
-isMockInvocation(<Object: void foo()>/test/0, 
-<Object: void foo()>, test, _. r2). !\label{line:facts-imi}!
-|VirtualMethodInvocation(<Object: void foo()>/test/0, !\label{line:facts-vmi}!
-|                        <Object: void foo()>, test).
-|VirtualMethodInvocation_Base(<Object: void foo()>/test/0, 
-|                                  r2).
-|isMockVar(r2). !\label{line:facts-imv}!
-|-AssignReturnValue(<Mockito: Object mock(Class)>/test/0, !\label{line:facts-arv}!
-|                        r2). 
-|-callsMockSource(<Mockito: Object mock(Class)>/test/0). !\label{line:facts-cms}!
-|MockSourceMethod(<Mockito: Object mock(Class)>). !\label{line:facts-msm}!
-|CallGraphEdge(_, <Mockito: Object mock(Class)>/test/0, _, !\label{line:facts-cge}!
-|              <Mockito: Object mock(Class)>). 
+	isMockInvocation(<Object: void foo()>/test/0, 
+	<Object: void foo()>, test, _. r2). !\label{line:facts-imi}!
+	|VirtualMethodInvocation(<Object: void foo()>/test/0, !\label{line:facts-vmi}!
+	|                        <Object: void foo()>, test).
+	|VirtualMethodInvocation_Base(<Object: void foo()>/test/0, 
+	|                                  r2).
+	|isMockVar(r2). !\label{line:facts-imv}!
+	|-AssignReturnValue(<Mockito: Object mock(Class)>/test/0, !\label{line:facts-arv}!
+	|                        r2). 
+	|-callsMockSource(<Mockito: Object mock(Class)>/test/0). !\label{line:facts-cms}!
+	|MockSourceMethod(<Mockito: Object mock(Class)>). !\label{line:facts-msm}!
+	|CallGraphEdge(_, <Mockito: Object mock(Class)>/test/0, _, !\label{line:facts-cge}!
+	|              <Mockito: Object mock(Class)>). 
 \end{lstlisting}
 
 
@@ -365,7 +364,7 @@ JUnit tests are simply methods that developers write in test classes, appropriat
 
 % what about hierarchical drivers?
 
-Thus, to enable static analysis over a benchmark's test suite, our tool uses Soot to generate a driver class for each Java sub-package of the suite (e.g. \\ \texttt{org.apache.ibatis.executor.statement}). In each of these sub-package driver classes, our tool creates a \textit{runall()} method, which invokes all methods within the sub-package that JUnit (either 3 or 4) considers to be public, as well as non-constructor test cases, all surrounded by calls to class-level init/setup and teardown methods. Concrete test methods are particularly easy to call from a driver, as they are specified to have no parameters and are not supposed to rely on any particular ordering. 
+Thus, to enable static analysis over a benchmark's test suite, our tool uses Soot to generate a driver class for each Java sub-package of the suite (e.g. \\ \texttt{org.apache.ibatis.executor.statement}). In each of these sub-package driver classes, our tool creates a \textit{runall()} method, which invokes all methods within the sub-package that JUnit (either 3 or 4) considers to be non-constructor test cases, all surrounded by calls to class-level init/setup and teardown methods. Test methods from concrete test classes are particularly easy to call from a driver, as they are specified to have no parameters and are not supposed to rely on any particular ordering. 
 Our tool then creates a RootDriver class at the root package level, which invokes the \textit{runall()} method in each sub-package driver class, along with the \texttt{@Test}/\texttt{@Before}/\texttt{@After} methods found in classes located at the root. The drivers that we generate also contain code to catch all checked exceptions declared to be thrown by the unit tests. Both our Soot and Doop implementations use the generated driver classes.
 
 All static frameworks must somehow approximate the set of entry points as appropriate for their targets. For instance, the Wala framework~\cite{wala19:_t} also creates synthetic entry points, but it does this to perform pointer analysis on a program's main code rather than to enumerate the program's test cases.

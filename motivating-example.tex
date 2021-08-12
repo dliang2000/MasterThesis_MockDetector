@@ -69,27 +69,27 @@ Listing~\ref{lis:mockMethodIR} displays the Jimple IR for Listing~\ref{lis:mockM
 
 \begin{lstlisting}[basicstyle=\ttfamily, caption={A toy example illustrates a real object \texttt{object1} and a mock object \texttt{object2}, and their corresponding method invocations of \textit{foo()}.},
 basicstyle=\ttfamily, captionpos=b, label=lis:mockMethod, escapechar=|, morekeywords={@Test, specialinvoke, virtualinvoke, staticinvoke}]
-Object object1 = new Object();
-object1.foo();
-
-Object object2 = mock(Object.class);
-object2.foo();
+	Object object1 = new Object();
+	object1.foo();
+	
+	Object object2 = mock(Object.class);
+	object2.foo();
 \end{lstlisting}
 
 
 
 \begin{lstlisting}[basicstyle=\ttfamily, caption={Jimple Intermediate Representation for the code in Listing~\ref{lis:mockMethod}.},
 basicstyle=\ttfamily, captionpos=b, label=lis:mockMethodIR, escapechar=|, morekeywords={@Test, specialinvoke, virtualinvoke, staticinvoke}]
-java.lang.Object $r1, r2;
-
-$r1 = new java.lang.Object; |\label{line:lis3line3}|
-specialinvoke $r1.<java.lang.Object: void <init>()>(); |\label{line:lis3line4}|
-virtualinvoke $r1.<java.lang.Object: void foo()>(); |\label{line:lis3line5}|
-
-r2 = staticinvoke <org.mockito.Mockito: |\label{line:lis3line7}|
-				java.lang.Object mock(java.lang.Class)> |\label{line:lis3line8}|
-				(class "Ljava/lang/Object;");
-virtualinvoke r2.<java.lang.Object: void foo()>(); |\label{line:lis3line10}|
+	java.lang.Object $r1, r2;
+	
+	$r1 = new java.lang.Object; |\label{line:lis3line3}|
+	specialinvoke $r1.<java.lang.Object: void <init>()>(); |\label{line:lis3line4}|
+	virtualinvoke $r1.<java.lang.Object: void foo()>(); |\label{line:lis3line5}|
+	
+	r2 = staticinvoke <org.mockito.Mockito: |\label{line:lis3line7}|
+					java.lang.Object mock(java.lang.Class)> |\label{line:lis3line8}|
+					(class "Ljava/lang/Object;");
+	virtualinvoke r2.<java.lang.Object: void foo()>(); |\label{line:lis3line10}|
 \end{lstlisting}
 
 
