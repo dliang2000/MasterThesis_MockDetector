@@ -4,7 +4,7 @@
 %====================================================================== 
 
 %The major difference between the Doop's total runtime and the actual time spent on mock invocation analysis comes from the build of the complete graph. %Add reference for SLOCCount.
-In this chapter, we perform a qualitative evaluation of our \textsc{MockDetector} tool in assisting for focal method findings, as well as a quantitative evaluation of the tool in identifying mock objects and finding invocations. We compare the performance and run-time between our Soot and Doop implementations. In addition, we also investigate over four types of base analyses used by Doop, and their effect in mock object findings and efficiencies.
+In this chapter, we perform a qualitative evaluation of our \textsc{MockDetector} tool in assisting for focal method findings, as well as a quantitative evaluation of the tool in identifying mock objects and finding invocations. We compare the run-time and performance between our Soot and Doop implementations. In addition, we also investigate over four types of base analyses used by Doop, and their effect in mock object findings and efficiencies.
 
 \section{Qualitative Evaluation}
 
@@ -109,9 +109,10 @@ In Section~\ref{sec:common} we discussed the implementation of our intraprocedur
 
 \section{Field Mocks}
 
+We perform an evaluation on the usefulness of our pre-analyses finding field mocks. 
 Table~\ref{tab:field-mocks} displays the number of field mock objects that are defined via \texttt{@Mock} annotations, in the constructors, and in the \texttt{@Before}/\texttt{setUp()} methods, respectively. 
 
-Benchmarks include \textsc{jsonschema2pojo-core}, \textsc{mybatis}, and \textsc{vraptor-core}, which have the number of test-related methods containing mock objects (intraprocedural analysis) and number of intraprocedural mock invokes at the high end, also tend to define mock objects in a more systematic way, coming with a large number of field mock objects defined in the pre-settings of each test class, and consequently used in multiple test cases within the test class. In addition, benchmarks like \textsc{bootique} and \textsc{maven-core} also prefer to define field mock objects in the pre-settings. Therefore, 5 out of the 8 open-source benchmarks likes to define mock objects in the test suites following a more systematic way, defining the field mock objects at the pre-setting stage. This suggests that our pre-analysis for field mocks described in Section~\ref{subsec:pre-analysis} is indeed a necessary but also an effective step for analyzing mock objects in the test suites.
+We focus on benchmarks such as \textsc{jsonschema2pojo-core}, \textsc{mybatis}, and \textsc{vraptor-core}. These benchmarks have a high number of test-related methods containing mock objects, and have many intraprocedural mock invokes. From the results collected in Table~\ref{tab:field-mocks}, we can tell these benchmarks also prefer to define field mock objects. Instead of repetitively creating the same mock objects in each test case within the same test class, these benchmarks create the field mock objects once and and consequently use them in all the test cases. Such action could help for less code maintenance. In addition, benchmarks like \textsc{bootique} and \textsc{maven-core} also prefer to define field mock objects. Therefore, 5 out of the 8 open-source benchmarks prefer to define field mock objects for the ease of testing. This suggests that our pre-analysis for field mocks described in Section~\ref{subsec:pre-analysis} is indeed a necessary and an effective step for analyzing mock objects and mock invocations in the test suites.
 
 
 \section{Basic-Only vs. Other Base Analyses}
@@ -175,7 +176,7 @@ We believe that the basic-only base analyses has some undesired behaviour in the
 
 In addition, we can observe that CI and CIPP have comparable run-times and mock invocation counts, with CI having slightly higher run-times, both intraprocedurally and interprocedurally. This makes sense, as CIPP is ``context-insensitive with an enhancement for low-hanging fruit: methods that have their params flow to their return value get a methods that have their params flow to their return value get a 1-obj treatment"~\cite{yanniss}. Data presented in Table~\ref{tab:doop-callgraph-all-counts} demonstrates that the call graph sizes are comparable for CI and CIPP, with CI's call graphs generally slightly bigger as expected.
 
-On the other hand, since 1-object-sensitive base analysis is a more sophisticated analysis, it spends more time on building the CHA graph (3 benchmarks ending up with timed-out runs on building the CHA graph), resulting in a much smaller call graph and thus has a faster execution time on actual mock analysis. 
+On the other hand, since 1-object-sensitive base analysis is a more sophisticated analysis, it spends more time on building the CHA graph (3 benchmarks ending up with timed-out runs on building the CHA graph). We feed the same input to all four base analyses, but sophisticated analysis like 1-object-sensitive returns a much smaller call-graph. We believe it produces a better defined call-graph and thus executes faster on the actual mock analysis. However, we need to communicate to Doop developers more and have better understandings of the logic involved in these sophisticated analyses before making a conclusion.
 
 % We are currently investigating the performance of intra-procedural basic-only analysis, trying to understand why it would spend more time strictly on mock analysis than CI and CIPP.
 
@@ -265,7 +266,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 	\resizebox{\columnwidth}{!}{
 		\begin{tabular}{lrrrr}
 			\toprule
-			Benchmark & \thead{\# of Annotated \\ Field Mock Objects} & \thead{\# of Field Mock Objects \\ defined in the constructors}  & \thead{\# of Field Mock Objects \\ defined in @Before methods} \\
+			Benchmark & \thead{\# of Annotated \\ Field Mock Objects} & \thead{\# of Field Mock Objects \\ defined in the \texttt{<init>} constructor}  & \thead{\# of Field Mock Objects \\ defined in @Before methods} \\
 			\midrule
 			bootique-2.0.B1-bootique           		&  0        &  0    & 8        \\
 			commons-collections4-4.4          		&  0        &  0    & 0        \\
