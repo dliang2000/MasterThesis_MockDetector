@@ -10,8 +10,7 @@ We present two complementary ways of statically computing mock information: an i
 \section{High Level Definition}
 \label{sec:high-level}
 
-Similarly to the dataflow analysis,
-the declarative approach propagates mockness from known mock sources, through the statements in the intermediate representation, to potential mock invocation sites.
+In this section, we present the high level definitions for mockness. We 
 
 \section{Imperative Soot Implementation}
 \label{sec:soot}
@@ -367,13 +366,13 @@ JUnit tests are simply methods that developers write in test classes, appropriat
 Thus, to enable static analysis over a benchmark's test suite, our tool uses Soot to generate a driver class for each Java sub-package of the suite (e.g. \\ \texttt{org.apache.ibatis.executor.statement}). In each of these sub-package driver classes, our tool creates a \textit{runall()} method, which invokes all methods within the sub-package that JUnit (either 3 or 4) considers to be non-constructor test cases, all surrounded by calls to class-level init/setup and teardown methods. Test methods from concrete test classes are particularly easy to call from a driver, as they are specified to have no parameters and are not supposed to rely on any particular ordering. 
 Our tool then creates a RootDriver class at the root package level, which invokes the \textit{runall()} method in each sub-package driver class, along with the \texttt{@Test}/\texttt{@Before}/\texttt{@After} methods found in classes located at the root. The drivers that we generate also contain code to catch all checked exceptions declared to be thrown by the unit tests. Both our Soot and Doop implementations use the generated driver classes.
 
-All static frameworks must somehow approximate the set of entry points as appropriate for their targets. For instance, the Wala framework~\cite{wala19:_t} also creates synthetic entry points, but it does this to perform pointer analysis on a program's main code rather than to enumerate the program's test cases.
+All static frameworks must somehow approximate the set of entry points as appropriate for their targets. Additionally, the Wala framework~\cite{wala19:_t} creates synthetic entry points, but it does this to perform pointer analysis on a program's main code rather than to enumerate the program's test cases.
 
 \subsection{Intraprocedural Analysis} 
 
-The Soot analysis is intraprocedural and the Doop analysis has an intraprocedural version. In both of these cases, we make the unsound (but reasonable for our anticipated use case) assumption that mockness can be dropped between callers and callees: at method entry points, no parameters are assumed to be mocks, and at method returns, the returned object is never a test. Doop's interprocedural version drops this assumption, and instead context-insensitively propagates information from callers to callees and back; we discuss the results of doing so in Chapter~\ref{chap:evaluation}.
+The Soot analysis is intraprocedural and the Doop analysis has an intraprocedural version. In both of these cases, we make the unsound (but reasonable for our anticipated use case) assumption that mockness can be dropped between callers and callees: at method entry points, no parameters are assumed to be mocks, and at method returns, the returned object is never a mock. Doop's interprocedural version drops this assumption, and instead context-insensitively propagates information from callers to callees and back; we discuss the results of doing so in Chapter~\ref{chap:evaluation}.
 
-Call graphs are useful to our intraprocedural analysis in two ways: first, because they help identify calls to mock source methods (that we identify explicitly); and second, because they come with entry points (which we effectively supply to the call graph using our generated driver, as explained above). We assume that developers do not call inherited versions of mock creation sites. (However, if a call graph is available in Doop, we use it). 
+Call graphs are useful to our intraprocedural analysis in two ways: first, because they help identify calls to mock source methods (that we identify explicitly); and second, because they come with entry points (which we effectively supply to the call graph using our generated driver, as explained above). We assume that developers do not call inherited versions of mock creation sites (for example, it could be a wrapper of the mock source method). However, if a call graph of any inherited versions of mock create sites is available in Doop, our Doop implementation will use it. 
 
 \subsection{Mock Libraries}
 
