@@ -96,7 +96,23 @@ $r3 = newarray (java.lang.Object)[1];
 |\colorbox{teal}{\$r3}|[0] = r1;
 \end{lstlisting}
 
-For mock-containing container (collection), the definition is similar except we look for container APIs.
+Similarly, for mock-containing container (write method), the Jimple IR definition is as follow:
+
+\begin{lstlisting}[basicstyle=\linespread{1.0}\ttfamily\small,numbers=none,escapechar={|}]
+java.util.ArrayList $r1;
+java.lang.Object $r2;
+X r3;
+
+$r1 = new java.util.ArrayList;
+specialinvoke $r1.<java.util.ArrayList: void <init>()>();
+|\colorbox{red}{\$r2}| = staticinvoke <org.mockito.Mockito: 
+		java.lang.Object mock(java.lang.Class)>
+		(class "X;");
+|\colorbox{red}{r3}| = (X) $r2;
+virtualinvoke |\colorbox{teal}{\$r1}|.<java.util.ArrayList: boolean add(java.lang.Object)>(r3);
+\end{lstlisting}
+
+The container APIs for read and write methods are hard-coded in both Soot and Doop implementations.
 
 \section{Imperative Soot Implementation}
 \label{sec:soot}
