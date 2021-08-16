@@ -7,10 +7,96 @@ We present two complementary ways of statically computing mock information: an i
 
 % Regarding Gregor's comments on affordances, maybe use advantages or other words?
 
-\section{High Level Definition}
+\section{High Level Definitions}
 \label{sec:high-level}
 
-In this section, we present the high level definitions for mockness. We 
+%Similarly to the dataflow analysis, the declarative approach propagates mockness from known mock sources, through the statements in the intermediate representation, to potential mock invocation sites
+
+In this section, we present the high level definitions for mockness using Jimple IR. The Soot implementation looks for these Jimple IRs during the "gen" action for each statement. The declarative Doop analysis is quite close to high level definitions.
+
+In the following Jimple IR definitions, the ones highlighted in red boxes are considered as mockness, and the ones highlighted in teal boxes are considered as mock-containing array or container.
+
+The first definition is for mock source creation methods: 
+
+\begin{lstlisting}[basicstyle=\linespread{1.0}\ttfamily\small,numbers=none,escapechar={|}]
+java.lang.Object r1;
+|\colorbox{red}{r1}| = staticinvoke <org.mockito.Mockito:
+		java.lang.Object mock(java.lang.Class)>
+		(class "Ljava/lang/Object;");
+
+\end{lstlisting}
+
+In the 3 mocking libraries, we consider for a total of 9 mock source creation methods. For the Jimple IR definition , we pick Mockito's \texttt{<org.mockito.Mockito: java.lang.Object mock(java.lang.Class)>} for representation purpose.
+
+The mock source methods return \texttt{java.lang.Object}. For objects of other types, Jimple IR casts the return object from mock source methods. The Jimple IR below uses a generalized type X (other than \texttt{java.lang.Object}):
+
+\begin{lstlisting}[basicstyle=\linespread{1.0}\ttfamily\small,numbers=none,escapechar={|}]
+X r1;
+java.lang.Object $r2;
+|\colorbox{red}{\$r2}| = staticinvoke <org.mockito.Mockito: 
+		java.lang.Object mock(java.lang.Class)>
+		(class "X;");
+|\colorbox{red}{r1}| = (X) $r2;
+\end{lstlisting}
+
+Field Mocks are commonly defined and used in several of the benchmarks we select. There are usually three ways to define field mocks. 
+
+The first way is to define fields as referencing mock objects via Mockito or EasyMock's @Mock annotations. This is unfortunately not reflected in the Jimple IR. Instead, we implemented the following annotation type check to locate the field mock defined via annotation.
+
+\begin{lstlisting}[basicstyle=\linespread{1.0}\ttfamily\small,numbers=none,escapechar={|}]
+for (AnnotationTag annotation : tag.getAnnotations()) {
+	if ( annotation.getType().equals("Lorg/mockito/Mock;") ||
+		 annotation.getType().equals("Lorg/easymock/Mock;") ) {
+	}
+}
+\end{lstlisting}
+
+The second approach defines field mocks in the constructor \texttt{<init>} method.
+
+\begin{lstlisting}[basicstyle=\linespread{1.0}\ttfamily\small,numbers=none,escapechar={|}]
+public void <init>() {
+	java.lang.Object $r1;
+	X $r2;
+	|\colorbox{red}{\$r1}| = staticinvoke <org.mockito.Mockito:
+			java.lang.Object mock(java.lang.Class)>
+			(class "X;");
+	|\colorbox{red}{\$r2}| = (X) $r1;
+}
+\end{lstlisting}
+
+The last approach defines field mocks in the \texttt{@Before}/\textit{setUp()} method:
+
+\begin{lstlisting}[basicstyle=\linespread{1.0}\ttfamily\small,numbers=none,escapechar={|}]
+private X x;
+public void init() {
+	TESTCLASS r0;
+	java.lang.Object $r1;
+	X $r2;
+	
+	r0 := @this: TESTCLASS;
+	|\colorbox{red}{\$r1}| = staticinvoke <org.mockito.Mockito:
+				java.lang.Object mock(java.lang.Class)>
+				(class "X;");
+	|\colorbox{red}{\$r2}| = (X) $r1;
+	|\colorbox{red}{r0.<TESTCLASS: X x>}| = $r2;
+}
+\end{lstlisting}
+
+For mock-containing array (write method), the following is a sample Jimple IR definition:
+
+\begin{lstlisting}[basicstyle=\linespread{1.0}\ttfamily\small,numbers=none,escapechar={|}]
+java.lang.Object r1, $r2;
+java.lang.Object[] $r3;
+
+|\colorbox{red}{\$r2}| = staticinvoke <org.easymock.EasyMock:
+		java.lang.Object createMock(java.lang.Class)>
+		(class "java.lang.Object;");
+|\colorbox{red}{r1}| = (java.lang.Object) $r2;
+$r3 = newarray (java.lang.Object)[1];
+|\colorbox{teal}{\$r3}|[0] = r1;
+\end{lstlisting}
+
+For mock-containing container (collection), the definition is similar except we look for container APIs.
 
 \section{Imperative Soot Implementation}
 \label{sec:soot}
@@ -185,7 +271,7 @@ basicstyle=\ttfamily, framesep=4.5mm, framexleftmargin=1.0mm, captionpos=b, labe
 \subsection{Pre-Analyses for Field Mocks Defined in Constructors and Before Methods}
 \label{subsec:pre-analysis}
 
-A number of our benchmarks define fields as referencing mock objects via EasyMock or Mockito \texttt{@Mock} annotations, or initialize these fields in the \texttt{<init>} constructor or \texttt{@Before} methods (\textit{setUp()} in JUnit 3), which test runners will execute before any test methods from those classes. These mock field or mock-containing container fields are then used in tests. In the Soot implementation, we use two pre-analyses before running the main analysis, under the assumption that fields are rarely mutated in the test cases (and that it is incorrect to do so). We have validated our assumption on benchmarks. An empirical analysis of our benchmarks shows that fewer than 0.3\% of all fields (29/9352) are mutated in tests.
+A number of our benchmarks define fields as referencing mock objects via EasyMock or Mockito's \texttt{@Mock} annotations, or initialize these fields in the \texttt{<init>} constructor or \texttt{@Before} methods (\textit{setUp()} in JUnit 3), which test runners will execute before any test methods from those classes. These mock field or mock-containing container fields are then used in tests. In the Soot implementation, we use two pre-analyses before running the main analysis, under the assumption that fields are rarely mutated in the test cases (and that it is incorrect to do so). We have validated our assumption on benchmarks. An empirical analysis of our benchmarks shows that fewer than 0.3\% of all fields (29/9352) are mutated in tests.
 %Table~\ref{tab:mutations} shows a preliminary analysis of field mutation frequency inside test cases---fewer than 0.3\% of fields are mutated in test cases.
 
 The first pre-analysis handles annotated field mocks and field mocks defined in the constructors (\texttt{<init>} methods), while the second pre-analysis handles \texttt{@Before} and \texttt{setUp()} methods. 
