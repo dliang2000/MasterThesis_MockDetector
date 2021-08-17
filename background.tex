@@ -3,11 +3,11 @@
 \label{chap:background}
 %====================================================================== 
 
-Static analysis techniques are an important tool for code analysis, especially when analyzing benchmarks with large code bases. Running an applicaion does not always expose bugs (for instance, due to missing branch coverage), where static analysis tools are more complete (at the price of false positives). A good static analysis tool can help developers to find bugs that are hard to spot manually (e.g., array out of bounds exception), which reduces time and costs involved in fixing bugs. 
+Static analysis techniques are an important tool for code analysis, especially when analyzing benchmarks with large code bases. Running an application does not always expose bugs (for instance, due to missing branch coverage), where static analysis tools are more complete (at the price of false positives). A good static analysis tool can help developers to find bugs that are hard to spot manually (e.g., array out of bounds exception), which reduces time and costs involved in fixing bugs. 
 
 \section{Dataflow Analysis}
 
-Dataflow analysis~\cite{kildall73:_unified_approac_global_progr_optim} is normally performed on a program's control flow graph (CFG). A CFG is a directed graph with each node stands for a statement in the program (the statement could be an assignment statement, an if statement, etc.), and the set of directed edges represents the overall control flow of the program.
+Dataflow analysis~\cite{kildall73:_unified_approac_global_progr_optim} is a static analysis which is performed on a program's control flow graph (CFG). A CFG is a directed graph with each node stands for a statement in the program (the statement could be an assignment statement, an if statement, etc.), and the set of directed edges represents the overall control flow of the program.
 
 Dataflow analysis, meanwhile, is a fixed point algorithm that computes and gathers all the facts at each program point (i.e., each node in the CFG). The facts would usually be a mapping between program variables and the abstractions specifically defined to solve the problem at hand. The most important decision for a dataflow analysis is the abstraction and associated flow functions to update the abstraction at each program point.
 
