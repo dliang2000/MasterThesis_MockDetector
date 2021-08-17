@@ -89,9 +89,9 @@ Both examples qualitatively demonstrate that our \textsc{MockDetector} tool can 
 
 \section{Description of Benchmark Suite}
 
-We have evaluated \textsc{MockDetector} on 8 open-source benchmarks, along with a micro-benchmark that we developed to test our tool. We ran all of our experiments on a 32-core Intel(R) Xeon(R) CPU E5-4620 v2 at 2.60GHz with 128GB of RAM running Ubuntu 16.04.7 LTS.
+We have quantitatively evaluated \textsc{MockDetector} on 8 open-source benchmarks, along with a micro-benchmark that we developed to test our tool. We ran all of our experiments on a 32-core Intel(R) Xeon(R) CPU E5-4620 v2 at 2.60GHz with 128GB of RAM running Ubuntu 16.04.7 LTS.
 
-Table~\ref{tab:runtimes} presents summary information about our benchmarks and runtimes, namely the LOC and Soot and Doop analysis run-times for each benchmark. The 9 benchmarks include over 383 kLOC, with 184 kLOC in the test suites, as measured by SLOCCount\footnote{\url{https://dwheeler.com/sloccount/}}. The Soot total time is the amount of time that it takes for Soot to analyze the benchmark and test suite in whole-program mode, including our analyses. The Soot intraprocedural analysis time is the sum of runtimes for the main analysis plus two pre-analyses, as described in Section~\ref{sec:soot}. Meanwhile, the reported Doop runtime is from the context-insensitive analysis, while the Doop analysis time for intraprocedural mock invocation analysis is for running the analysis alone based on recorded facts from the benchmark. The total Doop run-time is much slower than the total Soot run-time because Doop always computes a call-graph, which is an expensive operation. We believe that the Doop analysis-only time is also slower because it computes a solution over the entire program, as opposed to Soot, which works one method at a time.
+Table~\ref{tab:runtimes} presents summary information about our benchmarks and run-times, namely the LOC and Soot and Doop analysis run-times for each benchmark. The 9 benchmarks include over 383 kLOC, with 184 kLOC in the test suites, as measured by SLOCCount\footnote{\url{https://dwheeler.com/sloccount/}}. The Soot total time is the amount of time that it takes for Soot to analyze the benchmark and test suite in whole-program mode, including our analyses. The Soot intraprocedural analysis time is the sum of run-times for the main analysis plus two pre-analyses, as described in Section~\ref{sec:soot}. Meanwhile, the reported Doop run-time is from the context-insensitive analysis, while the Doop analysis time for intraprocedural mock invocation analysis is for running the analysis alone based on recorded facts from the benchmark. The total Doop run-time is much slower than the total Soot run-time because Doop always computes a call-graph, which is an expensive operation. We believe that the Doop analysis-only time is also slower because it computes a solution over the entire program, as opposed to Soot, which works one method at a time.
 
 \section{Prevalence of Mocks}
 
@@ -184,7 +184,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 
 \begin{table*}
 	\centering
-	\caption{Our suite of 8 open-source benchmarks (8000--117000 LOC) plus our microbenchmark. Soot and Doop analysis runtimes.}
+	\caption[Benchmarks' LOC plut Soot and Doop analysis run-times.]{Our suite of 8 open-source benchmarks (8000--117000 LOC) plus our microbenchmark. Soot and Doop analysis run-times.}
 	%	\begin{adjustbox}{width=0.1\textwidth}
 	\vspace*{.5em}
 	\resizebox{\columnwidth}{!}{%
@@ -211,7 +211,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 
 \begin{table*}
 	\centering
-	\caption{Counts of Test-Related (Test/Before/After) methods in public concrete test classes, along with counts of mocks, mock-containing arrays, and mock-containing collections, reported by Soot intraprocedural analysis.}
+	\caption[Counts of Mock Objects in Test-Related Methods.]{Counts of Test-Related (Test/Before/After) methods in public concrete test classes, along with counts of mocks, mock-containing arrays, and mock-containing collections, reported by Soot intraprocedural analysis.}
 	%	\begin{adjustbox}{width=0.1\textwidth}
 	\vspace*{.5em}
 	\resizebox{\columnwidth}{!}{
@@ -241,7 +241,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 \begin{table*}
 	\ra{1.2}
 	\centering
-	\caption{Number of InstanceInvokeExprs on Mock objects analyzed by Soot and Doop, and Total Number of InstanceInvokeExprs, in each benchmark's test suite. ``--''~=~timed out after 90 minutes. Runs [mybatis, basic-only] and [flink-core, 1-object-sensitive] take close to 90 minutes and sometimes time out.}
+	\caption[Number of Mock Invocations in Each Benchmark.]{Number of InstanceInvokeExprs on Mock objects analyzed by Soot and Doop, and Total Number of InstanceInvokeExprs, in each benchmark's test suite. ``--''~=~timed out after 90 minutes. Runs [mybatis, basic-only] and [flink-core, 1-object-sensitive] take close to 90 minutes and sometimes time out.}
 	\vspace*{.5em}
 	\begin{tabular}{@{}lrrcrrrrcrrrr@{}} \toprule
 	Benchmark & \thead{Total \\ Number of \\ Invocations} & \thead{Mock Invokes \\ intraproc (Soot)}
@@ -260,7 +260,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 
 \begin{table*}
 	\centering
-	\caption{Counts of Field Mock Objects defined via \protect\\ \texttt{@Mock} annotation, in the constructors, and in \texttt{@Before} methods, in each benchmark's test suite.}
+	\caption[Counts of Field Mock Objects.]{Counts of Field Mock Objects defined via \protect \texttt{@Mock} annotation, in the constructors, and in \texttt{@Before} methods, in each benchmark's test suite.}
 	%	\begin{adjustbox}{width=0.1\textwidth}
 	\vspace*{.5em}
 	\resizebox{\columnwidth}{!}{
@@ -314,7 +314,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 
 \begin{table*}
 	\centering
-	\caption{Intra-procedural Doop analysis-only runtime (in seconds) after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. \protect\\ ``--''~=~timed out after 90 minutes. Runs [mybatis, basic-only] and [flink-core, 1-object-sensitive] take close to 90 minutes and sometimes time out.}
+	\caption[Intraprocedural Doop Analysis-Only Run-time.]{Intraprocedural Doop analysis-only run-time (in seconds) after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. \protect\\ ``--''~=~timed out after 90 minutes. Runs [mybatis, basic-only] and [flink-core, 1-object-sensitive] take close to 90 minutes and sometimes time out.}
 	\vspace*{.5em}
 	\begin{tabular}{@{}lrrrrrrrr} \toprule
 		Benchmark & \multicolumn{8}{c}{intraproc}\\
@@ -331,7 +331,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 
 \begin{table*}
 	\centering
-	\caption{Inter-procedural Doop analysis-only runtime (in seconds) after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. \protect\\ ``--''~=~timed out after 90 minutes. Runs [mybatis, basic-only] and [flink-core, 1-object-sensitive] take close to 90 minutes and sometimes time out.}
+	\caption[Interprocedural Doop Analysis-Only Run-time.]{Interprocedural Doop analysis-only run-time (in seconds) after basic-only, context-insensitive, context-insensitive-plusplus and 1-object-sensitive base analyses. \protect\\ ``--''~=~timed out after 90 minutes. Runs [mybatis, basic-only] and [flink-core, 1-object-sensitive] take close to 90 minutes and sometimes time out.}
 	\vspace*{.5em}
 	\begin{tabular}{@{}lrrrrrrrr} \toprule
 		Benchmark & \multicolumn{8}{c}{interproc}\\
@@ -349,7 +349,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 
 \begin{table*}
 	\centering
-	\caption{Call graph statistics: total number of source classes and target classes from inter-procedural Doop analysis with basic-only, context-insensitive, context-insensitive-plusplus, and 1-object-sensitive base analyses. ``--''~=~timed out after 90 minutes. Runs [mybatis, basic-only] and [flink-core, 1-object-sensitive] take close to 90 minutes and sometimes time out.}
+	\caption[Call Graph Statistics.]{Call graph statistics: total number of source classes and target classes from interprocedural Doop analysis with basic-only, context-insensitive, context-insensitive-plusplus, and 1-object-sensitive base analyses. ``--''~=~timed out after 90 minutes. Runs [mybatis, basic-only] and [flink-core, 1-object-sensitive] take close to 90 minutes and sometimes time out.}
 	\vspace*{.5em}
 	\begin{tabular}{@{}lrrrrcrrrr} \toprule
 		Benchmark & \multicolumn{4}{c}{Source Classes} & \phantom{abc} & \multicolumn{4}{c}{Target Classes}
@@ -366,7 +366,7 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 
 \begin{table*}
 	\centering
-	\caption{Call graph statistics: total number of source classes that are application classes (i.e., excluding classes from dependencies or libraries) and total number of target classes reached from application classes by inter-procedural Doop analysis with basic-only, context-insensitive, context-insensitive-plusplus, and 1-object-sensitive base analyses. ``--''~=~timed out after 90 minutes. Runs [mybatis, basic-only] and [flink-core, 1-object-sensitive] take close to 90 minutes and sometimes time out.}
+	\caption[Call Graph Statistics Excluding Dependencies.]{Call graph statistics: total number of source classes that are application classes (i.e., excluding classes from dependencies or libraries) and total number of target classes reached from application classes by interprocedural Doop analysis with basic-only, context-insensitive, context-insensitive-plusplus, and 1-object-sensitive base analyses. ``--''~=~timed out after 90 minutes. Runs [mybatis, basic-only] and [flink-core, 1-object-sensitive] take close to 90 minutes and sometimes time out.}
 	\vspace*{.5em}
 	\begin{tabular}{@{}lrrrrcrrrr} \toprule
 		Benchmark & \multicolumn{4}{c}{Source Classes} & \phantom{abc} & \multicolumn{4}{c}{Target Classes}
