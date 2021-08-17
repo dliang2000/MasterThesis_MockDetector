@@ -12,7 +12,14 @@ We present two complementary ways of statically computing mock information: an i
 
 %Similarly to the dataflow analysis, the declarative approach propagates mockness from known mock sources, through the statements in the intermediate representation, to potential mock invocation sites
 
-In this section, we present the high level definitions for mockness using Jimple IR. The Soot implementation looks for these Jimple IRs during the "gen" action for each statement. The declarative Doop analysis is quite close to high level definitions.
+A mock object may be created and carried in several ways: it could be the return value from a mock creation sites; it could be a casted version of the return value from a mock creation sites in the intermediate level if the object is not of type \texttt{java.lang.Object}; it could be a copy of already-flagged mock; it could be a field mock object defined via annotations, in constructor \texttt{<init>}, or in \texttt{@Before}/\textit{setUp()} methods; or it could be hold by an array or container before re-accessing it.
+
+Therefore, the following is our definition for mockness:
+
+Object x is a mock object if it is either the return value from a mock creation sites (including field mocks), or if the initial mock definition reaches a use point through casting, transitive definition, or passed along through mock-containing arrays or containers. We consider paths over the intraprocedural control-flow graph and interprocedural call graph edges.
+
+
+In this section, we present the high level definitions for different categories of mockness using Jimple IR. The Soot implementation looks for these Jimple IRs during the ``gen" action for each statement. The declarative Doop analysis is quite close to high level definitions.
 
 In the following Jimple IR definitions, the ones highlighted in red boxes are considered as mockness, and the ones highlighted in teal boxes are considered as mock-containing array or container.
 
@@ -21,12 +28,12 @@ The first definition is for mock source creation methods:
 \begin{lstlisting}[basicstyle=\linespread{1.0}\ttfamily\small,numbers=none,escapechar={|}]
 java.lang.Object r1;
 |\colorbox{red}{r1}| = staticinvoke <org.mockito.Mockito:
-		java.lang.Object mock(java.lang.Class)>
-		(class "Ljava/lang/Object;");
+			java.lang.Object mock(java.lang.Class)>
+			(class "Ljava/lang/Object;");
 
 \end{lstlisting}
 
-In the 3 mocking libraries, we consider for a total of 9 mock source creation methods. For the Jimple IR definition , we pick Mockito's \texttt{<org.mockito.Mockito: java.lang.Object mock(java.lang.Class)>} for representation purpose.
+In the 3 mocking libraries, we consider a total of 9 mock source creation methods. For the Jimple IR definition , we pick Mockito's \texttt{<org.mockito.Mockito: java.lang.Object mock(java.lang.Class)>} for representation purpose.
 
 The mock source methods return \texttt{java.lang.Object}. For objects of other types, Jimple IR casts the return object from mock source methods. The Jimple IR below uses a generalized type X (other than \texttt{java.lang.Object}):
 
@@ -34,8 +41,8 @@ The mock source methods return \texttt{java.lang.Object}. For objects of other t
 X r1;
 java.lang.Object $r2;
 |\colorbox{red}{\$r2}| = staticinvoke <org.mockito.Mockito: 
-		java.lang.Object mock(java.lang.Class)>
-		(class "X;");
+			java.lang.Object mock(java.lang.Class)>
+			(class "X;");
 |\colorbox{red}{r1}| = (X) $r2;
 \end{lstlisting}
 
@@ -58,8 +65,8 @@ public void <init>() {
 	java.lang.Object $r1;
 	X $r2;
 	|\colorbox{red}{\$r1}| = staticinvoke <org.mockito.Mockito:
-			java.lang.Object mock(java.lang.Class)>
-			(class "X;");
+				java.lang.Object mock(java.lang.Class)>
+				(class "X;");
 	|\colorbox{red}{\$r2}| = (X) $r1;
 }
 \end{lstlisting}
@@ -89,8 +96,8 @@ java.lang.Object r1, $r2;
 java.lang.Object[] $r3;
 
 |\colorbox{red}{\$r2}| = staticinvoke <org.easymock.EasyMock:
-		java.lang.Object createMock(java.lang.Class)>
-		(class "java.lang.Object;");
+			java.lang.Object createMock(java.lang.Class)>
+			(class "java.lang.Object;");
 |\colorbox{red}{r1}| = (java.lang.Object) $r2;
 $r3 = newarray (java.lang.Object)[1];
 |\colorbox{teal}{\$r3}|[0] = r1;
@@ -106,8 +113,8 @@ X r3;
 $r1 = new java.util.ArrayList;
 specialinvoke $r1.<java.util.ArrayList: void <init>()>();
 |\colorbox{red}{\$r2}| = staticinvoke <org.mockito.Mockito: 
-		java.lang.Object mock(java.lang.Class)>
-		(class "X;");
+			java.lang.Object mock(java.lang.Class)>
+			(class "X;");
 |\colorbox{red}{r3}| = (X) $r2;
 virtualinvoke |\colorbox{teal}{\$r1}|.<java.util.ArrayList: boolean add(java.lang.Object)>(r3);
 \end{lstlisting}
@@ -187,7 +194,7 @@ $r4.<java.util.ArrayList: boolean add(java.lang.Object)>(r3);
 
 %% In this example, $\$r1$ is the immediate receiver from Mockito's mock creation site, whereas $r2$ is the casted expression that gets carried along in the subsequent program. Thus, our tool would include the immediate receivers, and the casted expressions of mock objects into the generation set, in two steps. 
 
-\subsection{Toy Example Revisit - Soot Implementation}
+\subsection{Toy Example Revisited --- Soot Implementation}
 \label{subsec:toy-example-soot}
 
 Let us now revisit the toy example first introduced in Section~\ref{sec:toy-example}. 
@@ -381,7 +388,7 @@ The predicates \texttt{AssignReturnValue}, \texttt{AssignCast}, and \texttt{Assi
 
 We designed the analysis in a modular fashion, such that the interprocedural, collections, arrays, and fields support can all be disabled through the use of \verb+#ifdef+s, which can be specified on the Doop command-line.
 
-\subsection{Toy Example Revisit - Doop Implementation}
+\subsection{Toy Example Revisited - Doop Implementation}
 \label{subsec:toy-example-doop}
 
 Again referring to Jimple Listing~\ref{lis:mockExampleIR}, this time we ask whether the invocation on Jimple line~\ref{line:lis41line10} satisfies predicate \texttt{isMockInvocation} (facts Listing~\ref{lis:facts}, line~\ref{line:facts-imi}), which we define to hold the analysis result---namely, all mock invocation sites in the program. It does, because of facts lines~\ref{line:facts-vmi}--\ref{line:facts-imv}: Jimple line~\ref{line:lis41line10} contains a virtual method invocation, and the receiver object \texttt{r2} for the invocation on that line satisfies our predicate \texttt{isMockVar}, which holds all mock-containing variables in the program (Section~\ref{sec:dec-doop} provides more details). Predicate \texttt{isMockVar} holds because of lines~\ref{line:facts-arv}--\ref{line:facts-cms}: \texttt{r2} satisfies \texttt{isMockVar} because Jimple line~\ref{line:lis41line7} assigns \texttt{r2} the return value from mock source method \texttt{createMock} (facts line~\ref{line:facts-arv}), and the call to \texttt{createMock} satisfies predicate \texttt{callsMockSource} (facts line~\ref{line:facts-cms}), which requires that the call destination \texttt{createMock} be enumerated as a constant in our 1-ary relation \texttt{MockSourceMethod} (facts line~\ref{line:facts-msm}), and that there be a call graph edge between the method invocation at line~\ref{line:lis41line7} and the mock source method (facts line~\ref{line:facts-cge}).
@@ -447,7 +454,7 @@ isMockVar(mv).
 
 \subsection{Fields} 
 
-Apart from the obvious rule stating that a field which is assigned from a mock satisfies {\tt fieldContainsMock}, we also label fields that have the {\tt org.mockito.Mock} annotation as mock-containing. We declare that a given field \emph{signature} may contain a mock, i.e. the field with a given signature belonging to all objects of a given type. We also support containers stored in fields.
+Apart from the obvious rule stating that a field which is assigned from a mock satisfies {\tt fieldContainsMock}, we also label fields that have the {\tt org.mockito.Mock} or \\ {\tt org.easyMock.Mock} annotation as mock-containing. We declare that a given field \emph{signature} may contain a mock, i.e. the field with a given signature belonging to all objects of a given type. We also support containers stored in fields.
 
 \subsection{Arrays and Fields} 
 

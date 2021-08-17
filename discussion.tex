@@ -55,7 +55,7 @@ As stated above, instrumentation is easier in Soot than in Doop, and that extend
 In this project, we presented two implementations for detecting mock objects and tracking mock invocations in test suites. There are multiple areas require further investigation to improve \textsc{MockDetector}'s quality:
 
 \begin{itemize}
-	\item We will work on Soot interprocedural implementations in our tool for a more complete mock analysis. It will be useful to compare and further understand the two approaches analyzing mock objects.
+	\item We will work on the Soot interprocedural implementation in our tool for a more complete mock analysis. It will be useful to compare and further understand the two approaches analyzing mock objects.
 	\item The current interprocedural Doop implementation could not differentiate method invocations in the test suites from the ones in the source code. We will work on modifying Doop's implementation to only report results from the test suites for move accurate results.
 	\item We plan to build construct an automated focal method analysis tool. It aims to help quantitatively evaluate our \textsc{MockDetector} tool in assisting for the focal method findings.
 \end{itemize}
