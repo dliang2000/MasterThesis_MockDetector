@@ -388,7 +388,7 @@ The predicates \texttt{AssignReturnValue}, \texttt{AssignCast}, and \texttt{Assi
 
 We designed the analysis in a modular fashion, such that the interprocedural, collections, arrays, and fields support can all be disabled through the use of \verb+#ifdef+s, which can be specified on the Doop command-line.
 
-\subsection{Toy Example Revisited - Doop Implementation}
+\subsection{Toy Example Revisited --- Doop Implementation}
 \label{subsec:toy-example-doop}
 
 Again referring to Jimple Listing~\ref{lis:mockExampleIR}, this time we ask whether the invocation on Jimple line~\ref{line:lis41line10} satisfies predicate \texttt{isMockInvocation} (facts Listing~\ref{lis:facts}, line~\ref{line:facts-imi}), which we define to hold the analysis result---namely, all mock invocation sites in the program. It does, because of facts lines~\ref{line:facts-vmi}--\ref{line:facts-imv}: Jimple line~\ref{line:lis41line10} contains a virtual method invocation, and the receiver object \texttt{r2} for the invocation on that line satisfies our predicate \texttt{isMockVar}, which holds all mock-containing variables in the program (Section~\ref{sec:dec-doop} provides more details). Predicate \texttt{isMockVar} holds because of lines~\ref{line:facts-arv}--\ref{line:facts-cms}: \texttt{r2} satisfies \texttt{isMockVar} because Jimple line~\ref{line:lis41line7} assigns \texttt{r2} the return value from mock source method \texttt{createMock} (facts line~\ref{line:facts-arv}), and the call to \texttt{createMock} satisfies predicate \texttt{callsMockSource} (facts line~\ref{line:facts-cms}), which requires that the call destination \texttt{createMock} be enumerated as a constant in our 1-ary relation \texttt{MockSourceMethod} (facts line~\ref{line:facts-msm}), and that there be a call graph edge between the method invocation at line~\ref{line:lis41line7} and the mock source method (facts line~\ref{line:facts-cge}).
@@ -464,7 +464,7 @@ We also support not just array locals but also array fields. That is, when an ar
 \label{sec:common}
 We have parameterized our technique with respect to mocking libraries and have instantiated it with respect to the popular Java libraries Mockito, EasyMock, and PowerMock. We also support different versions of JUnit\footnote{\url{https://junit.org}}: 3, and 4+, and we support the Java Collections API. We discuss this parameterization in this subsection.
 
-Both JUnit and mocking libraries rely heavily on reflection to functions, and would normally pose problems for static analyses. In particular, the set of reachable test methods is enumerated at runtime, and the mock libraries create mock objects reflectively. Fortunately, their use of reflection is limited and stylized, and we have designed our analyses to soundly handle these libraries.
+Both JUnit and mocking libraries rely heavily on reflection, and would normally pose problems for static analyses. In particular, the set of reachable test methods is enumerated at run-time, and the mock libraries create mock objects reflectively. Fortunately, their use of reflection is limited and stylized, and we have designed our analyses to soundly handle these libraries.
 
 \subsection{JUnit and Driver Generation}
 
