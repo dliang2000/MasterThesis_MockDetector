@@ -12,16 +12,16 @@ We present two complementary ways of statically computing mock information: an i
 
 %Similarly to the dataflow analysis, the declarative approach propagates mockness from known mock sources, through the statements in the intermediate representation, to potential mock invocation sites
 
-A mock object may be created and carried in several ways: it could be the return value from a mock creation sites; it could be a casted version of the return value from a mock creation sites in the intermediate level if the object is not of type \texttt{java.lang.Object}; it could be a copy of already-flagged mock; it could be a field mock object defined via annotations, in constructor \texttt{<init>}, or in \texttt{@Before}/\textit{setUp()} methods; or it could be hold by an array or container before re-accessing it.
+A mock object may be created and carried in several ways: it could be the return value from a mock creation site; it could be a casted version of the return value from a mock creation site in the intermediate level if the object is not of type \texttt{java.lang.Object}; it could be a copy of an already-flagged mock; it could be a field mock object defined via annotations, in constructor \texttt{<init>}, or in \texttt{@Before}/\textit{setUp()} methods; or it could be hold by an array or container before re-accessing it.
 
 Therefore, the following is our definition for mockness:
 
-Object x is a mock object if it is either the return value from a mock creation sites (including field mocks), or if the initial mock definition reaches a use point through casting, transitive definition, or passed along through mock-containing arrays or containers. We consider paths over the intraprocedural control-flow graph and interprocedural call graph edges.
+Object x is a mock object if it is either the return value from a mock creation site (including field mocks), or if the initial mock definition reaches a use point through casting, transitive definition, or passed along through mock-containing arrays or containers. We consider paths over the intraprocedural control-flow graph and interprocedural call graph edges.
 
 
-In this section, we present the high level definitions for different categories of mockness using Jimple IR. The Soot implementation looks for these Jimple IRs during the ``gen" action for each statement. The declarative Doop analysis is quite close to high level definitions.
+In this section, we present the high level definitions for different categories of mock using Jimple IR. The Soot implementation looks for these Jimple IRs during the ``gen" action for each statement. The declarative Doop analysis is quite close to the high-level definitions.
 
-In the following Jimple IR definitions, the ones highlighted in red boxes are considered as mockness, and the ones highlighted in teal boxes are considered as mock-containing array or container.
+In the following Jimple IR definitions, the ones highlighted in red boxes are considered as mockness, and the ones highlighted in teal boxes are considered as mock-containing arrays or containers.
 
 The first definition is for mock source creation methods: 
 
@@ -33,7 +33,7 @@ java.lang.Object r1;
 
 \end{lstlisting}
 
-In the 3 mocking libraries, we consider a total of 9 mock source creation methods. For the Jimple IR definition , we pick Mockito's \texttt{<org.mockito.Mockito: java.lang.Object mock(java.lang.Class)>} for representation purpose.
+In the 3 mocking libraries, we consider a total of 9 mock source creation methods. For the Jimple IR definition , we pick Mockito's \texttt{<org.mockito.Mockito: java.lang.Object mock(java.lang.Class)>} as a representative.
 
 The mock source methods return \texttt{java.lang.Object}. For objects of other types, Jimple IR casts the return object from mock source methods. The Jimple IR below uses a generalized type X (other than \texttt{java.lang.Object}):
 
@@ -119,7 +119,7 @@ specialinvoke $r1.<java.util.ArrayList: void <init>()>();
 virtualinvoke |\colorbox{teal}{\$r1}|.<java.util.ArrayList: boolean add(java.lang.Object)>(r3);
 \end{lstlisting}
 
-The container APIs for read and write methods are hard-coded in both Soot and Doop implementations.
+The container APIs for read and write methods are hard-coded in both the Soot and Doop implementations.
 
 \section{Imperative Soot Implementation}
 \label{sec:soot}
@@ -268,8 +268,8 @@ Figure~\ref{fig:arrayMockIllustration} illustrates the process of identifying a 
 	//        mock: |\cmark|     mockAPI: |\cmark|
 	Object object1 = createMock(Object.class);
 	
-	// arrayMock: |\cmark| |$\Leftarrow$| array-write    |~~|  mock: |\cmark|
-	objects  |~~|           = new Object[]  |~|  { object1 };
+	// 			arrayMock: |\cmark| |~| |$\Leftarrow$| array-write    |~~|  mock: |\cmark|
+	Object[] |~| objects  |~|         = new Object[]  |~|  { object1 };
 	\end{lstlisting}
 	
 	\caption{Our static analysis also finds array mocks.}
@@ -284,8 +284,8 @@ basicstyle=\ttfamily, framesep=4.5mm, framexleftmargin=1.0mm, captionpos=b, labe
 	java.lang.Object[] $r3;
 	
 	$r2 = staticinvoke <org.easymock.EasyMock: |\label{line:lis4line4}|
-	java.lang.Object createMock(java.lang.Class)>
-	(class "java.lang.Object;"); |\label{line:lis4line6}|
+			java.lang.Object createMock(java.lang.Class)>
+			(class "java.lang.Object;"); |\label{line:lis4line6}|
 	r1 = (java.lang.Object) $r2; |\label{line:lis4line7}|
 	$r3 = newarray (java.lang.Object)[1]; |\label{line:lis4line8}|
 	$r3[0] = r1;  |\label{line:lis4line9}|

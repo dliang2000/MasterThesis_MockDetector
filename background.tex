@@ -3,17 +3,17 @@
 \label{chap:background}
 %====================================================================== 
 
-Static analysis techniques are an important tool for code analysis, especially when analyzing benchmarks with large code bases. Running an application does not always expose bugs (for instance, due to missing branch coverage), where static analysis tools are more complete (at the price of false positives). A good static analysis tool can help developers to find bugs that are hard to spot manually (e.g., array out of bounds exception), which reduces time and costs involved in fixing bugs. 
+Static analysis is an important tool for code analysis, especially when analyzing benchmarks with large code bases. Running an application does not always expose bugs (for instance, due to missing branch coverage), where static analysis tools are more complete (at the price of false positives). A good static analysis tool can help developers to find bugs that are hard to spot manually (e.g., array out of bounds exception), which reduces time and costs involved in fixing bugs. 
 
 \section{Dataflow Analysis}
 
-Dataflow analysis~\cite{kildall73:_unified_approac_global_progr_optim} is a static analysis which is performed on a program's control flow graph (CFG). A CFG is a directed graph with each node stands for a statement in the program (the statement could be an assignment statement, an if statement, etc.), and the set of directed edges represents the overall control flow of the program.
+Dataflow analysis~\cite{kildall73:_unified_approac_global_progr_optim} is a static analysis which is performed on a program's control flow graph (CFG). A CFG is a directed graph in which each node stands for a statement in the program (the statement could be an assignment statement, an if statement, etc.), and the set of directed edges represents the overall control flow of the program.
 
 Dataflow analysis, meanwhile, is a fixed point algorithm that computes and gathers all the facts at each program point (i.e., each node in the CFG). The facts would usually be a mapping between program variables and the abstractions specifically defined to solve the problem at hand. The most important decision for a dataflow analysis is the abstraction and associated flow functions to update the abstraction at each program point.
 
-\paragraph{Forward vs. Backward} Researchers or developers need to make two additional decisions before implementations. First, they would decide if the problem should be categorized as a forward or backward dataflow problem. For a forward dataflow analysis, the facts propagate along the direction of the control flow. Determining whether expressions are available (i.e. have already been computed) at each program point is a type of forward dataflow problem. On the other hand, the facts propagate in the opposite direction from the control flow in a backward dataflow analysis, and most importantly, we need to access the future usage of the variables. Analyzing the liveness of variables is a known backward dataflow problem. (Few dataflow problems may require bidirectional flows.)
+\paragraph{Forward vs. Backward} Researchers or developers need to make two additional decisions before implementation. First, they must decide if the problem should be categorized as a forward or backward dataflow problem. For a forward dataflow analysis, the facts propagate along the direction of the control flow. Determining whether expressions are available (i.e. have already been computed) at each program point is a type of forward dataflow problem. On the other hand, the facts propagate in the opposite direction from the control flow in a backward dataflow analysis, and most importantly, we need to access the future usage of the variables. Analyzing the liveness of variables is a known backward dataflow problem. Few dataflow problems require bidirectional flows.
 
-\paragraph{May vs. Must} Researchers or developers also need to decide on if it is a may or must dataflow problem. The core difference between the two types of problems is how they handle the facts at all the join points in the program, where multiple branches meet. A may dataflow analysis keeps facts that hold true on any joined path. ``Reaching Definitions" is a may analysis problem. It checks if a definition (or assignment) of a variable reaches a specific program point. On the other hand, must dataflow analysis only keeps facts that hold true from all the branches. Determining available expressions is also a must analysis problem.
+\paragraph{May vs. Must} Researchers or developers also need to decide if it is a may or must dataflow problem. The core difference between the two types of problems is how they handle the facts at all the join points in the program, where multiple branches meet. A may dataflow analysis keeps facts that hold true on any joined path. ``Reaching Definitions" is a may analysis problem. It checks if a definition (or assignment) of a variable reaches a specific program point. On the other hand, must dataflow analysis only keeps facts that hold true from all the branches. Determining available expressions is a must analysis problem.
 
 \paragraph{Gen and Kill Set} All dataflow analyses requires a transfer function of some kind for each program point. Generally, the actions on the dataflow analysis domain are often called ``gen" and ``kill". When we have set of facts at each statement, the kill action removes the facts that are no long true from the set, while the gen action adds new facts that are now true. The flow function describing such process are of the form
 
@@ -21,7 +21,7 @@ Dataflow analysis, meanwhile, is a fixed point algorithm that computes and gathe
 out(s) = gen(s) \bigcup (in(s)  \setminus  kill(s))
 \end{equation}
 
-Dataflow analyses are usually implemented imperatively, which focuses on the ``HOW" part of the solution, providing a set of commands or operations to tackle the problem.
+Dataflow analyses are usually implemented imperatively, which focuses on the ``how" part of the solution, providing a set of commands or operations to tackle the problem.
 
 \subsection{Soot}
 
@@ -35,23 +35,23 @@ Heros~\cite{bodden12:_inter_proced_data_flow_analy} is an inter-procedural, fini
 
 \section{Declarative Analysis}
 
-While an imperative approach focuses on the ``HOW" component of a solution, declarative analysis focuses on the ``WHAT" part during the implementation. It gives a set of constraints which must be solved.
+While an imperative approach focuses on the ``how" component of a solution, declarative analysis focuses on the ``what" part during the implementation. It gives a set of constraints which must be solved.
 
 A declarative approach normally comes with an underlying imperative layer, where some type of tool handles the imperative processes for the developer.
 
 \subsection{Doop}
 
-We choose Doop~\cite{bravenboer09:_stric_declar_specif_sophis_point_analy} as the declarative framework for our project. It comes with a number of implementations solving the constraints stated in the declarative form. The current version of Doop uses Soufflé\footnote{\url{https://souffle-lang.github.io/docs.html}} as the Datalog engine for analyses rules.
+We chose Doop~\cite{bravenboer09:_stric_declar_specif_sophis_point_analy} as the declarative framework for our project. It comes with a number of implementations solving the constraints stated in the declarative form. The current version of Doop uses Soufflé\footnote{\url{https://souffle-lang.github.io/docs.html}} as the Datalog engine for analysis rules.
 
 Doop takes as input facts generated by Soot (imported into a database) as well as declarative Datalog rules. It then asks Soufflé to solve the rules on the inputs. Doop also computes fixed points by embedding them in the constraints it gives to the constraint solver.
 
 
 \section{Mock Objects} 
 
-Mock objects are commonly used in unit test cases. They substitute for the real objects that are normally hard to create (e.g., a database), or slow to process (e.g., a connection). It is noteworthy that mock objects are never being tested in test cases. Their purpose are to stand in for the dependencies, assisting for the behavioural test of the real object. For this to happen, the mock objects must at least mimic the behaviour at interfaces connecting to the real object under test.
+Mock objects are commonly used in unit test cases. They substitute for the real objects that are normally hard to create (e.g., a database), or slow to process (e.g., a connection). It is noteworthy that mock objects are never being tested in test cases. Their purpose is to stand in for the dependencies, assisting for the behavioural test of the real object. For this to happen, the mock objects must at least mimic the behaviour at interfaces connecting to the real object under test.
 
-Imagine you want to test the behaviour of a detonator. It is infeasible to always test the detonator's behaviour with a real bomb, also sometimes there is no bomb available. So in this scenario, you build a mock bomb. The mock bomb does not do anything other than checks whether it has received instructions to explode. Note that in the whole process, you are testing the detonator's behaviour, not the mock bomb's behaviour.\footnote{The idea of this example is sparked from \url{https://stackoverflow.com/questions/28783722/when-using-mokito-what-is-the-difference-between-the-actual-object-and-the-mock?noredirect=1&lq=1}.}
+Imagine you want to test the behaviour of a detonator. It is infeasible to always test the detonator's behaviour with a real bomb. So in this scenario, you build a mock bomb. The mock bomb does not do anything other than check whether it has received instructions to explode. Note that in the whole process, you are testing the detonator's behaviour, not the mock bomb's behaviour.\footnote{The idea of this example is sparked from \url{https://stackoverflow.com/questions/28783722/when-using-mokito-what-is-the-difference-between-the-actual-object-and-the-mock?noredirect=1&lq=1}.}
 
-The current static analysis tools, however, could not differentiate a mock object and a real object, because the containing variables have the same type in Java and in the IR. Section~\ref{sec:toy-example} runs a toy example and explains why the current tools are incompetent in locating mock objects.
+The current static analysis tools, however, could not differentiate a mock object and a real object, because the containing variables have the same type in Java and in the IR. Section~\ref{sec:toy-example} runs a toy example and explains why the current tools are insufficient in locating mock objects.
 
-For our project, we consider for Java mock source methods from three mocking frameworks: EasyMock\footnote{\url{https://easymock.org/}}, Mockito\footnote{\url{https://site.mockito.org/}}, and PowerMock\footnote{\url{https://github.com/powermock/powermock}}. According to a prior study~\cite{mostafa14:_empirical_study_mock_frameworks}, EasyMock and Mockito are used in about 90\% of the 5,000 randomly sampled projects. We then added a third mocking framework by our own choice. Thus, we believe our analysis results should be applicable to most of the Java benchmarks. 
+For our project, we consider for Java mock source methods from three mocking frameworks: EasyMock\footnote{\url{https://easymock.org/}}, Mockito\footnote{\url{https://site.mockito.org/}}, and PowerMock\footnote{\url{https://github.com/powermock/powermock}}. According to a prior study~\cite{mostafa14:_empirical_study_mock_frameworks}, EasyMock and Mockito are used in about 90\% of the 5,000 randomly sampled projects. We then added a third mocking framework by our own choice. Thus, we believe our analysis results should be applicable to most Java benchmarks. 
