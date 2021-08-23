@@ -21,7 +21,7 @@ Object x is a mock object if it is either the return value from a mock creation 
 
 In this section, we present the high level definitions for different categories of mock using Jimple IR. The Soot implementation looks for these Jimple IRs during the ``gen" action for each statement. The declarative Doop analysis is quite close to the high-level definitions.
 
-In the following Jimple IR definitions, the ones highlighted in dashed boxes are considered as mock, and the ones highlighted in stacked boxes are considered as mock-containing arrays or containers.
+In the following Jimple IR definitions, the ones highlighted in dashed boxes are considered as mock, and the ones highlighted in frame boxes are considered as mock-containing arrays or containers.
 
 The first definition is for mock source creation methods: 
 
@@ -100,7 +100,7 @@ java.lang.Object[] $r3;
 			(class "java.lang.Object;");
 |\dbox{r1}| = (java.lang.Object) $r2;
 $r3 = newarray (java.lang.Object)[1];
-|\lbox{\$r3}|[0] = r1;
+|\fbox{\$r3}|[0] = r1;
 \end{lstlisting}
 
 Similarly, for mock-containing container (write method), the Jimple IR definition is as follow:
@@ -116,7 +116,7 @@ specialinvoke $r1.<java.util.ArrayList: void <init>()>();
 			java.lang.Object mock(java.lang.Class)>
 			(class "X;");
 |\dbox{r3}| = (X) $r2;
-virtualinvoke |\lbox{\$r1}|.<java.util.ArrayList: boolean add(java.lang.Object)>(r3);
+virtualinvoke |\fbox{\$r1}|.<java.util.ArrayList: boolean add(java.lang.Object)>(r3);
 \end{lstlisting}
 
 The container APIs for read and write methods are hard-coded in both the Soot and Doop implementations.
