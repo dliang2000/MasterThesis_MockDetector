@@ -21,13 +21,13 @@ Object x is a mock object if it is either the return value from a mock creation 
 
 In this section, we present the high level definitions for different categories of mock using Jimple IR. The Soot implementation looks for these Jimple IRs during the ``gen" action for each statement. The declarative Doop analysis is quite close to the high-level definitions.
 
-In the following Jimple IR definitions, the ones highlighted in red boxes are considered as mockness, and the ones highlighted in teal boxes are considered as mock-containing arrays or containers.
+In the following Jimple IR definitions, the ones highlighted in dashed boxes are considered as mock, and the ones highlighted in stacked boxes are considered as mock-containing arrays or containers.
 
 The first definition is for mock source creation methods: 
 
 \begin{lstlisting}[basicstyle=\linespread{1.0}\ttfamily\small,numbers=none,escapechar={|}]
 java.lang.Object r1;
-|\colorbox{red}{r1}| = staticinvoke <org.mockito.Mockito:
+|\dbox{r1}| = staticinvoke <org.mockito.Mockito:
 			java.lang.Object mock(java.lang.Class)>
 			(class "Ljava/lang/Object;");
 
@@ -40,10 +40,10 @@ The mock source methods return \texttt{java.lang.Object}. For objects of other t
 \begin{lstlisting}[basicstyle=\linespread{1.0}\ttfamily\small,numbers=none,escapechar={|}]
 X r1;
 java.lang.Object $r2;
-|\colorbox{red}{\$r2}| = staticinvoke <org.mockito.Mockito: 
+|\dbox{\$r2}| = staticinvoke <org.mockito.Mockito: 
 			java.lang.Object mock(java.lang.Class)>
 			(class "X;");
-|\colorbox{red}{r1}| = (X) $r2;
+|\dbox{r1}| = (X) $r2;
 \end{lstlisting}
 
 Field Mocks are commonly defined and used in several of the benchmarks we select. There are usually three ways to define field mocks. 
@@ -64,10 +64,10 @@ The second approach defines field mocks in the constructor \texttt{<init>} metho
 public void <init>() {
 	java.lang.Object $r1;
 	X $r2;
-	|\colorbox{red}{\$r1}| = staticinvoke <org.mockito.Mockito:
+	|\dbox{\$r1}| = staticinvoke <org.mockito.Mockito:
 				java.lang.Object mock(java.lang.Class)>
 				(class "X;");
-	|\colorbox{red}{\$r2}| = (X) $r1;
+	|\dbox{\$r2}| = (X) $r1;
 }
 \end{lstlisting}
 
@@ -81,11 +81,11 @@ public void init() {
 	X $r2;
 	
 	r0 := @this: TESTCLASS;
-	|\colorbox{red}{\$r1}| = staticinvoke <org.mockito.Mockito:
+	|\dbox{\$r1}| = staticinvoke <org.mockito.Mockito:
 				java.lang.Object mock(java.lang.Class)>
 				(class "X;");
-	|\colorbox{red}{\$r2}| = (X) $r1;
-	|\colorbox{red}{r0.<TESTCLASS: X x>}| = $r2;
+	|\dbox{\$r2}| = (X) $r1;
+	|\dbox{r0.<TESTCLASS: X x>}| = $r2;
 }
 \end{lstlisting}
 
@@ -95,12 +95,12 @@ For mock-containing array (write method), the following is a sample Jimple IR de
 java.lang.Object r1, $r2;
 java.lang.Object[] $r3;
 
-|\colorbox{red}{\$r2}| = staticinvoke <org.easymock.EasyMock:
+|\dbox{\$r2}| = staticinvoke <org.easymock.EasyMock:
 			java.lang.Object createMock(java.lang.Class)>
 			(class "java.lang.Object;");
-|\colorbox{red}{r1}| = (java.lang.Object) $r2;
+|\dbox{r1}| = (java.lang.Object) $r2;
 $r3 = newarray (java.lang.Object)[1];
-|\colorbox{teal}{\$r3}|[0] = r1;
+|\lbox{\$r3}|[0] = r1;
 \end{lstlisting}
 
 Similarly, for mock-containing container (write method), the Jimple IR definition is as follow:
@@ -112,11 +112,11 @@ X r3;
 
 $r1 = new java.util.ArrayList;
 specialinvoke $r1.<java.util.ArrayList: void <init>()>();
-|\colorbox{red}{\$r2}| = staticinvoke <org.mockito.Mockito: 
+|\dbox{\$r2}| = staticinvoke <org.mockito.Mockito: 
 			java.lang.Object mock(java.lang.Class)>
 			(class "X;");
-|\colorbox{red}{r3}| = (X) $r2;
-virtualinvoke |\colorbox{teal}{\$r1}|.<java.util.ArrayList: boolean add(java.lang.Object)>(r3);
+|\dbox{r3}| = (X) $r2;
+virtualinvoke |\lbox{\$r1}|.<java.util.ArrayList: boolean add(java.lang.Object)>(r3);
 \end{lstlisting}
 
 The container APIs for read and write methods are hard-coded in both the Soot and Doop implementations.
