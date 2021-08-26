@@ -29,7 +29,7 @@ Among all the dataflow analysis tools, Soot~\cite{Vallee-Rai:1999:SJB:781995.782
 
 An intermediate representation (IR) is an abstract language designed for ease of analysis and transformation. A good IR is independent of the source and target languages, and thus convenient to translate into code for retargetable architectures.
 
-For our project, we use Jimple (simple Java), which is a stackless, typed 3-address IR in the CFG. To familiarize with Jimple IR's syntax, the following is an example of high-level Java code and its corresponding Jimple IR.
+For our project, we use Jimple (simple Java), which is a stackless, typed 3-address IR in the CFG. To familiarize with Jimple IR's syntax, the following is an example of high-level Java code and its corresponding Jimple IR for a defined mock object.
 
 Java source code:
 \begin{lstlisting}[basicstyle=\linespread{1.0}\ttfamily\small,numbers=none]
@@ -45,6 +45,10 @@ $r2 = staticinvoke <org.mockito.Mockito:
 		(class "Lorg/apache/maven/execution/MavenSession;");
 r1 = (org.apache.maven.execution.MavenSession) $r2;
 \end{lstlisting}
+
+For each method invocation, Jimple IR outputs the type of invocation along with the method signature. The method's signature consists of the class where the method is declared and the method's subsignature, which the subsignature specifies the method name, the list of parameter types, and the type of the return object. 
+
+Since the return object from Mockito's mock source creation method \textit{mock()} is of type \textsc{java.lang.Object} , Java sees the actual return object as a parameterized type with an implicit insertion of casting. 
 
 Heros~\cite{bodden12:_inter_proced_data_flow_analy} is an inter-procedural, finite, distributive subset problems (IFDS) / interprocedural distributive environment (IDE) solver that provides interprocedural support to the Soot framework.
 
