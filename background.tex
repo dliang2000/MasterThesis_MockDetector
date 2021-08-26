@@ -29,26 +29,27 @@ Among all the dataflow analysis tools, Soot~\cite{Vallee-Rai:1999:SJB:781995.782
 
 An intermediate representation (IR) is an abstract language designed for ease of analysis and transformation. A good IR is independent of the source and target languages, and thus convenient to translate into code for retargetable architectures.
 
-For our project, we use Jimple (simple Java), which is a stackless, typed 3-address IR in the CFG. To familiarize with Jimple IR's syntax, the following is an example of high-level Java code and its corresponding Jimple IR for a defined mock object.
+For our project, we use Jimple (simple Java), which is a stackless, typed 3-address IR in the CFG. To familiarize the reader with Jimple IR's syntax, the following is an example of high-level Java code and its corresponding Jimple IR for code that defines a mock object.
 
 Java source code:
-\begin{lstlisting}[basicstyle=\linespread{1.0}\ttfamily\small,numbers=none]
+\begin{lstlisting}[basicstyle=\linespread{1.0}\ttfamily\small]
 MavenSession session = mock(MavenSession.class);
 \end{lstlisting}
 
 Jimple IR:
-\begin{lstlisting}[basicstyle=\linespread{1.0}\ttfamily\small,numbers=none]
+\begin{lstlisting}[basicstyle=\linespread{1.0}\ttfamily\small,escapechar=|]
 org.apache.maven.execution.MavenSession r1;
 java.lang.Object $r2;
 $r2 = staticinvoke <org.mockito.Mockito:
 		java.lang.Object mock(java.lang.Class)>
 		(class "Lorg/apache/maven/execution/MavenSession;");
-r1 = (org.apache.maven.execution.MavenSession) $r2;
+r1 = (org.apache.maven.execution.MavenSession) $r2; |\label{line:6}|
 \end{lstlisting}
 
-For each method invocation, Jimple IR outputs the type of invocation along with the method signature. The method's signature consists of the class where the method is declared and the method's subsignature, which the subsignature specifies the method name, the list of parameter types, and the type of the return object. 
+For each method invocation, the Jimple IR contains the type of invocation (i.e. staticinvoke, specialinvoke, dynamicinvoke, interfaceinvoke, or virtualinvoke) along with the method signature. The method's signature consists of the class where the method is declared and the method's subsignature (method name, parameter types, and return type).
 
-Since the return object from Mockito's mock source creation method \textit{mock()} is of type \textsc{java.lang.Object} , Java sees the actual return object as a parameterized type with an implicit insertion of casting. 
+The actual return object (r1) is of a different type \\ (\textsc{org.apache.maven.execution.MavenSession}) than the return type \\ (\textsc{java.lang.Object}) from Mockito's mock source creation method \textit{mock()}'s return type. Java parametrized types exist only at source code level but not at bytecode level. They are erased from the bytecode\footnote{They are preserved in attributes but not the bytecode itself.}.
+The Java compiler then produces a cast to bridge from \textsc{java.lang.Object} (in the bytecode) to the mock return type in the parametrized source code.
 
 Heros~\cite{bodden12:_inter_proced_data_flow_analy} is an inter-procedural, finite, distributive subset problems (IFDS) / interprocedural distributive environment (IDE) solver that provides interprocedural support to the Soot framework.
 
