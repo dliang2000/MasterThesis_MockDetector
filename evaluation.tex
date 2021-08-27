@@ -93,6 +93,13 @@ We have quantitatively evaluated \textsc{MockDetector} on 8 open-source benchmar
 
 Table~\ref{tab:runtimes} presents summary information about our benchmarks and run-times, namely the LOC and Soot and Doop analysis run-times for each benchmark. The 9 benchmarks include over 383 kLOC, with 184 kLOC in the test suites, as measured by SLOCCount\footnote{\url{https://dwheeler.com/sloccount/}}. The Soot total time is the amount of time that it takes for Soot to analyze the benchmark and test suite in whole-program mode, including our analyses. The Soot intraprocedural analysis time is the sum of run-times for the main analysis plus two pre-analyses, as described in Section~\ref{sec:soot}. Meanwhile, the reported Doop run-time is from the context-insensitive analysis, while the Doop analysis time for intraprocedural mock invocation analysis is for running the analysis alone based on recorded facts from the benchmark. The total Doop run-time is much slower than the total Soot run-time because Doop always computes a call-graph, which is an expensive operation. We believe that the Doop analysis-only time is also slower because it computes a solution over the entire program, as opposed to Soot, which works one method at a time.
 
+\section{Field Mocks}
+
+We perform an evaluation on the usefulness of our pre-analyses finding field mocks. 
+Table~\ref{tab:field-mocks} displays the number of field mock objects that are defined via \texttt{@Mock} annotations, in the constructors, and in the \texttt{@Before}/\texttt{setUp()} methods, respectively. 
+
+We focus on benchmarks such as \textsc{jsonschema2pojo-core}, \textsc{mybatis}, and \textsc{vraptor-core}. These benchmarks have a high number of test-related methods containing mock objects, and have many intraprocedural mock invokes. From the results collected in Table~\ref{tab:field-mocks}, we can tell these benchmarks also prefer to define field mock objects. Instead of repetitively creating the same mock objects in each test case within the same test class, these benchmarks create the field mock objects once and and consequently use them in all the test cases. Such action could help for less code maintenance. In addition, benchmarks like \textsc{bootique} and \textsc{maven-core} also prefer to define field mock objects. Therefore, 5 out of the 8 open-source benchmarks prefer to define field mock objects for the ease of testing. This suggests that our pre-analysis for field mocks described in Section~\ref{subsec:pre-analysis} is indeed a necessary and an effective step for analyzing mock objects and mock invocations in the test suites.
+
 \section{Prevalence of Mocks}
 
 We next investigated the prevalence of mocks. Table~\ref{tab:mocks} presents the number of test-related (Test/Before/After) methods which contain local variables or which access fields that are mocks, mock-containing arrays, or mock-containing collections, as reported by our Soot-based intraprocedural analysis. Across the 8 benchmarks, test-related methods containing local/field mocks or mock-containing containers accounted for 0.35\% to 51.8\% of the total number of test-related methods found in public concrete test classes. Our benchmarks are from different domains and created by different groups of developers. The difference in mock usage reflects their different philosophies and constraints regarding the creation and usage of mock objects in tests. Benchmarks like \textsc{vraptor-core} and \textsc{jsonschema2pojo-core} have more than half of their test-related methods containing mock objects (and mock-containing arrays); in both of these, most field mocks are created via annotations and reused in multiple test cases in the same class.
@@ -101,27 +108,17 @@ The core result is in Table~\ref{tab:invokes}, which presents the number of meth
 
 Note that our declarative and imperative implementations find exactly the same number of intraprocedural mock invocations for 4 of our benchmarks. On the others, the main source of missed mock calls in the Soot implementation is missing support for array- or collection-related functions. Our intraprocedural analysis finds that method invocations on mock objects account for a range from 0.086\% to 16.4\% of the total number of invocations. The two implementations of mock analysis serve to cross validate each other. Often there is only one implementation for a static analysis project, thus it is difficult to judge on the implementation's soundness and correctness. It is possible to formally prove analysis properties, but even then, nothing guarantees conformance of the implementation to the formal description. For this project, I can cross check the results from two implementations, investigate the discrepancies and decide which implementation to further improve on. The improvements on finding intraprocedural mock invocations will be in the future work.
 
+Combining the mock counts result from Table~\ref{tab:mocks} and intraprocedural mock invocations result from Table~\ref{tab:invokes}, we can see that benchmarks such as \textsc{jsonschema2pojo-core}, \textsc{mybatis} and \textsc{vraptor-core} rely quite heavily on mock objects in their tests, which supports our motivation that it is quite necessary to track mock objects and invocations on mocks, to refine the existing algorithm to find focal methods and remove candidates that are definitely not focal methods. 
+
 %--- discuss the numbers for the interprocedural analysis.
+
+\subsection{Intraprocedural vs. Interprocedural}
 
 In Section~\ref{sec:common} we discussed the implementation of our intraprocedural and interprocedural analyses. We can now discuss the effects of these implementation choices on the experimental results. Recall that we chose, unsoundly, to not propagate any information across method calls in the intraprocedural analysis. Thus, the intraproc columns in Table~\ref{tab:invokes} show smaller numbers than the interproc columns, as expected. The minor difference in \textsc{vraptor-core} is due to one method (which ought to be present) not showing up in Doop's context-insensitive call-graph. Note also that there is a sometimes drastic increase from the intraprocedural to the interprocedural result, e.g. from 40 to 1300 for \textsc{flink}. This is because mocks can (especially context-insensitively) propagate from tests to the methods that they call and throughout the main program code. It would be desirable to be able to differentiate test helper methods, which we do want to propagate mocks to, from methods in the main program, which we generally do not want to propagate mocks to. (Although the main program may make mock invocations on objects it is given, we do not want to report these mock invocations from main code.) However, our current analysis infrastructure treats test and main code identically.
 
-Analyzing the interprocedural results, CI and CIPP report more mock invocations in 7 out of the 9 benchmarks compared to basic-only. For benchmarks \textsc{flink-core}, \textsc{jsonschema2pojo-core}, \textsc{mybatis} and \textsc{vraptor-core}, CI and CIPP report significantly more mock invocations than basic-only. Our investigation in Section~\ref{sec:basic-only-vs-others} suggests that such discrepancies are due to the fact that basic-only reports edges to abstract methods and not edges to concrete implementations of these abstract methods. We need to have more discussions with doop authors before giving a definite conclusion, but we believe that the basic-only analysis needs improvement before it can be used to produce a reliable call graph.
+\section{Doop Only Analysis}
 
-Combining the mock counts result from Table~\ref{tab:mocks} and intraprocedural mock invocations result from Table~\ref{tab:invokes}, we can see that benchmarks such as \textsc{jsonschema2pojo-core}, \textsc{mybatis} and \textsc{vraptor-core} rely quite heavily on mock objects in their tests, which supports our motivation that it is quite necessary to track mock objects and invocations on mocks, to refine the existing algorithm to find focal methods and remove candidates that are definitely not focal methods. 
-
-%We have successfully executed our Doop analysis with different base analyses. We chose to report numbers for the context-insensitive base analysis here as it matches our own analysis. (It would also be possible, but require significantly more effort, to adapt our analysis to carry around context.)
-
-%--- , indicates the removal of mock invocations from call graph would improve the call graph's accuracy on method coverage for the benchmarks on the high end of the mock invocation percentage. 
-
-\section{Field Mocks}
-
-We perform an evaluation on the usefulness of our pre-analyses finding field mocks. 
-Table~\ref{tab:field-mocks} displays the number of field mock objects that are defined via \texttt{@Mock} annotations, in the constructors, and in the \texttt{@Before}/\texttt{setUp()} methods, respectively. 
-
-We focus on benchmarks such as \textsc{jsonschema2pojo-core}, \textsc{mybatis}, and \textsc{vraptor-core}. These benchmarks have a high number of test-related methods containing mock objects, and have many intraprocedural mock invokes. From the results collected in Table~\ref{tab:field-mocks}, we can tell these benchmarks also prefer to define field mock objects. Instead of repetitively creating the same mock objects in each test case within the same test class, these benchmarks create the field mock objects once and and consequently use them in all the test cases. Such action could help for less code maintenance. In addition, benchmarks like \textsc{bootique} and \textsc{maven-core} also prefer to define field mock objects. Therefore, 5 out of the 8 open-source benchmarks prefer to define field mock objects for the ease of testing. This suggests that our pre-analysis for field mocks described in Section~\ref{subsec:pre-analysis} is indeed a necessary and an effective step for analyzing mock objects and mock invocations in the test suites.
-
-
-\section{Basic-Only vs. Other Base Analyses}
+\subsection{Basic-Only vs. Other Base Analyses}
 \label{sec:basic-only-vs-others}
 
 We explored the run-time performance of our 8 declarative analysis variants based on recorded program facts. We used hyperfine\footnote{\url{https://github.com/sharkdp/hyperfine}} to perform 10 benchmarking runs for the Soufflé command of mock analysis, and present the means and standard deviations from the 10 runs in Table~\ref{tab:doop-intra-runtimes} and~\ref{tab:doop-inter-runtimes}.
@@ -129,6 +126,8 @@ We explored the run-time performance of our 8 declarative analysis variants base
 The running times show that the Doop runs with basic-only base analysis spend more time on mock analysis for most benchmarks than the run-times from the more advanced base analyses. Basic-only is a naive base analysis that generates a much larger call graph than more advanced base analyses, and as it would need to check through more call graph edges, we expect that basic-only would generally spend more time on performing mock analysis. Table~\ref{tab:doop-callgraph-all-counts} highlights the number of source classes and target classes presented in the call graph generated by the four base analyses, which supports the idea that basic-only generates a bigger call graph, and spends most of the extra time checking over unnecessary classes generated in the call graph instead of performing actual mock analysis.
 
 To further investigate the interprocedural running times on benchmarks including \textsc{jsonschema2pojo-core}, \textsc{mybatis}, and \textsc{vraptor-core}, we remove call graph edges that have library classes or dependency classes as source classes for each base analysis, and then count the total number of source classes and target classes in the filtered call graph. As Table~\ref{tab:doop-callgraph-package-counts} shows, if we take the difference of the number of target classes from the number of source classes for each base analysis, the results suggest that the more advanced base analyses (CI, CIPP) reach more target classes from a better defined subset of source classes that are application classes. 
+
+\subsection{Investigate Basic-Only CHA}
 
 We believe that the basic-only base analyses has some undesired behaviour in the process of generating the CHA. We have discussed with the doop authors. They consider that calls to concrete implementations of abstract methods are not included in CHA. We believe this is not correct from our data collection but it is their assumption. Figure~\ref{fig:edgesToSiblingMethod} shows the call graph edges from the method \textit{isApplicableType} on the class PatternRule to \texttt{java.lang.String fullName()}, which is a sibling method (i.e. a method that has implementations in multiple classes under the same superclass) that is first declared in the abstract base class \texttt{com.sun.codemodel.JType}. From Figure~\ref{fig:edgesToSiblingMethod}, we can tell that the basic-only base analysis only reports edges to the (abstract) method \texttt{com.sun.codemodel.JType.fullName}, whereas the call graph generated by context-insensitive base analysis reports edges to implementation sites of the target method. We believe that this shows that there are missing edges in basic-only from its choice to stop at the abstract level. Combining this information with the total number of interprocedural mock invocations reported for the three benchmarks, we know that CI and CIPP have found notably more mock invocations in the process of searching through the edges to the implementation sites of the sibling methods, and the time spent on this process possibly accounts for the higher mock-analysis running times of CI and CIPP on benchmarks \textsc{jsonschema2pojo-core}, \textsc{mybatis}, and \textsc{vraptor-core}.
 
@@ -149,7 +148,7 @@ We believe that the basic-only base analyses has some undesired behaviour in the
 	<<immutable-context>>	<org.jsonschema2pojo.rules.PatternRule: 
 	boolean isApplicableType(com.sun.codemodel.JFieldVar)>/com.sun.codemodel.JClass.fullName/0	
 	<<immutable-context>>	<com.sun.codemodel.JTypeWildcard: java.lang.String fullName()>
-		
+	
 	<<immutable-context>>	<org.jsonschema2pojo.rules.PatternRule: 
 	boolean isApplicableType(com.sun.codemodel.JFieldVar)>/com.sun.codemodel.JClass.fullName/0	
 	<<immutable-context>>	<com.sun.codemodel.JNarrowedClass: java.lang.String fullName()>
@@ -177,11 +176,19 @@ We believe that the basic-only base analyses has some undesired behaviour in the
 \end{figure}
 % More discussion will be added for the outlier: mybatis and vraptor interprocedural runtimes.
 
-\section{More Sophisticated Analyses}
+\subsection{Doop's Mock Invocation Results Comparison}
+
+Analyzing the Doop interprocedural results, CI and CIPP report more mock invocations in 7 out of the 9 benchmarks compared to basic-only. For benchmarks \textsc{flink-core}, \textsc{jsonschema2pojo-core}, \textsc{mybatis} and \textsc{vraptor-core}, CI and CIPP report significantly more mock invocations than basic-only. Our investigation in Section~\ref{sec:basic-only-vs-others} suggests that such discrepancies are due to the fact that basic-only reports edges to abstract methods and not edges to concrete implementations of these abstract methods. We need to have more discussions with doop authors before giving a definite conclusion, but we believe that the basic-only analysis needs improvement before it can be used to produce a reliable call graph.
+
+\subsection{More Sophisticated Analyses}
 
 In addition, we can observe that CI and CIPP have comparable run-times and mock invocation counts, with CI having slightly higher run-times, both intraprocedurally and interprocedurally. This makes sense, as CIPP is ``context-insensitive with an enhancement for low-hanging fruit: methods that have their params flow to their return value get a methods that have their params flow to their return value get a 1-obj treatment"~\cite{yanniss}. Data presented in Table~\ref{tab:doop-callgraph-all-counts} demonstrates that the call graph sizes are comparable for CI and CIPP, with CI's call graphs generally slightly bigger as expected.
 
 On the other hand, since 1-object-sensitive base analysis is a more sophisticated analysis, it spends more time on building the CHA graph (3 benchmarks ending up with timed-out runs on building the CHA graph). We feed the same input to all four base analyses, but sophisticated analysis like 1-object-sensitive returns a much smaller call-graph. We believe it produces a better defined call-graph and thus executes faster on the actual mock analysis. However, we need to communicate to Doop developers more and have better understandings of the logic involved in these sophisticated analyses before making a conclusion.
+
+%We have successfully executed our Doop analysis with different base analyses. We chose to report numbers for the context-insensitive base analysis here as it matches our own analysis. (It would also be possible, but require significantly more effort, to adapt our analysis to carry around context.)
+
+%--- , indicates the removal of mock invocations from call graph would improve the call graph's accuracy on method coverage for the benchmarks on the high end of the mock invocation percentage. 
 
 % We are currently investigating the performance of intra-procedural basic-only analysis, trying to understand why it would spend more time strictly on mock analysis than CI and CIPP.
 
@@ -212,6 +219,32 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 	}
 	%	\end{adjustbox}
 	\label{tab:runtimes}
+\end{table*}
+
+\begin{table*}
+	\centering
+	\caption[Counts of Field Mock Objects.]{Counts of Field Mock Objects defined via \protect \texttt{@Mock} annotation, in the constructors, and in \texttt{@Before} methods, in each benchmark's test suite.}
+	%	\begin{adjustbox}{width=0.1\textwidth}
+	\vspace*{.5em}
+	\resizebox{\columnwidth}{!}{
+		\begin{tabular}{lrrrr}
+			\toprule
+			Benchmark & \thead{\# of Annotated \\ Field Mock Objects} & \thead{\# of Field Mock Objects \\ defined in the \texttt{<init>} constructor}  & \thead{\# of Field Mock Objects \\ defined in @Before methods} \\
+			\midrule
+			bootique-2.0.B1-bootique           		&  0        &  0    & 8        \\
+			commons-collections4-4.4          		&  0        &  0    & 0        \\
+			flink-core-1.13.0-rc1           		&  0        &  0    & 0        \\
+			jsonschema2pojo-core-1.1.1           	&  26       &  126  & 0        \\
+			maven-core-3.8.1	           			&  7        &  0    & 1        \\
+			micro-benchmark         		  		&  2        &  0    & 29        \\
+			mybatis-3.5.6         		  			&  41       &  0    & 0        \\
+			quartz-core-2.3.1         	  			&  0     	&  0    & 0      \\
+			vraptor-core-3.5.5         	  			&  263      &  128  & 83       \\
+			\bottomrule
+		\end{tabular}
+	}
+	%	\end{adjustbox}
+	\label{tab:field-mocks}
 \end{table*}
 
 \begin{table*}
@@ -262,32 +295,6 @@ On the other hand, since 1-object-sensitive base analysis is a more sophisticate
 	\label{tab:invokes}
 \end{table*} 
 \end{landscape}
-
-\begin{table*}
-	\centering
-	\caption[Counts of Field Mock Objects.]{Counts of Field Mock Objects defined via \protect \texttt{@Mock} annotation, in the constructors, and in \texttt{@Before} methods, in each benchmark's test suite.}
-	%	\begin{adjustbox}{width=0.1\textwidth}
-	\vspace*{.5em}
-	\resizebox{\columnwidth}{!}{
-		\begin{tabular}{lrrrr}
-			\toprule
-			Benchmark & \thead{\# of Annotated \\ Field Mock Objects} & \thead{\# of Field Mock Objects \\ defined in the \texttt{<init>} constructor}  & \thead{\# of Field Mock Objects \\ defined in @Before methods} \\
-			\midrule
-			bootique-2.0.B1-bootique           		&  0        &  0    & 8        \\
-			commons-collections4-4.4          		&  0        &  0    & 0        \\
-			flink-core-1.13.0-rc1           		&  0        &  0    & 0        \\
-			jsonschema2pojo-core-1.1.1           	&  26       &  126  & 0        \\
-			maven-core-3.8.1	           			&  7        &  0    & 1        \\
-			micro-benchmark         		  		&  2        &  0    & 29        \\
-			mybatis-3.5.6         		  			&  41       &  0    & 0        \\
-			quartz-core-2.3.1         	  			&  0     	&  0    & 0      \\
-			vraptor-core-3.5.5         	  			&  263      &  128  & 83       \\
-		\bottomrule
-		\end{tabular}
-	}
-	%	\end{adjustbox}
-	\label{tab:field-mocks}
-\end{table*}
 
 %\begin{table*}
 %	\centering
