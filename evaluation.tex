@@ -10,15 +10,17 @@ In this chapter, we perform a qualitative evaluation of our \textsc{MockDetector
 
 We plan to reproduce Ghafari's algorithm~\cite{ghafari15:_autom} to automatically identify focal methods. However, first, before implementing it, we use manual inspection to evaluate how useful it is to remove mocks from consideration as focal methods. We present two examples in this section to showcase how our tool eliminates method invocations that are definitely not focal methods.
 
-First, let us revisit the example first discussed in Section~\ref{sec:running-example}. Figure~\ref{fig:mockExampleEvaluation} shows the process of locating the mock object \texttt{session} and thus the mock invocation \texttt{getRequest()} in the example. Both the Soot and Doop implementations report one mock invocation from the test case. Soot outputs the Invoke Expression for \texttt{getRequest()}, whereas Doop outputs the corresponding call-graph edge in the isMockInvocation.csv file. With the assistance of \textsc{MockDetector}, we could remove \texttt{getRequest()} from consideration as a focal method. We judge \texttt{getToolchainsForType()} to be the focal method because it is the only method invocation remaining after the elimination process, and the method indeed gets tested.
+First, let us revisit the example first discussed in Section~\ref{sec:running-example}. Figure~\ref{fig:mockExampleEvaluation} shows the process of locating the mock object \texttt{session} and thus the mock invocation \texttt{getRequest()} in the example. Both the Soot and Doop implementations report one mock invocation from the test case. Soot outputs the Invoke Expression for \texttt{getRequest()}, whereas Doop outputs the corresponding call-graph edge in the isMockInvocation.csv file. With the assistance of \textsc{MockDetector}, we could remove \texttt{getRequest()} from consideration as a focal method. We judge \texttt{getToolchainsForType()} to be the focal method because it is the only method invocation remaining after the elimination process. In addition, as the \texttt{length} attribute of the return object \texttt{basics} from the invocation \texttt{getToolchainsForType()} is checked in the assertion statement on Line 13, this test case indeed tests the behaviour of \texttt{toolchainManager.getToolchainsForType()}.
 
-For this example, since Ghafari's algorithm does not consider accessors (or so called inspector methods in the paper) as focal method, they will report no focal method for this unit test case. This clearly is an incorrect reporting from Ghafari's algorithm.
+For this example, since Ghafari's algorithm does not consider accessors (or so-called inspector methods in the paper) as focal methods, they will presumably report no focal method for this unit test case. This clearly is an incorrect reporting from Ghafari's algorithm.
 
 Figure~\ref{fig:mockExample2Evaluation} displays the second example, a test from \textsc{vraptor-core} has multiple mock invocations, with the field mock objects defined via mock annotations. 
 
 Both the Soot and Doop implementations identify all the field mocks, and consequently report three mock invocations from the test case. They also successfully output the Invoke Expressions or the corresponding call-graph edges for the three mock invocations: \texttt{getContentType()}, \texttt{deserializerFor()}, and \texttt{unsupportedMediaType()}. By a process of elimination, we could deduce that \texttt{intercept()} on Line~\ref{line:focal-method} is the focal method. 
 
-The heuristic of Ghafari's algorithm requires the unit test case having at least one assertion statement. Since this unit test case does not contain any assertion statement, it is unclear what Ghafari's algorithm will return as a focal method, or if Ghafari's algorithm could handle this type of unit test cases without assertion statements.
+The heuristic of Ghafari's algorithm requires the unit test case to have at least one assertion statement. Since this unit test case does not have any assertion statement, Ghafari's algorithm will presumably have undefined behaviour analyzing this unit test.
+
+In summary, Ghafari' algorithm does not seem to have a provision for methods with no mutators (presumably returns empty set), nor does it seem to be able to handle test cases with no assertions (presumably undefined behaviour).
 
 Both examples qualitatively demonstrate that our \textsc{MockDetector} tool can help remove invocations on mocks from consideration as focal methods, thus making it easier to identify focal methods. We believe our tool could augment the precision of Ghafari's algorithm. We could also potentially construct a novel elimination-based algorithm. Such an algorithm might be better since it considers more methods that are actually focal methods, like sophisticated getters.
 
@@ -34,8 +36,8 @@ Both examples qualitatively demonstrate that our \textsc{MockDetector} tool can 
 		when( session.|\colorbox{red}{getRequest()}| ).thenReturn( req ); |\label{line:mock}|
 		
 		ToolchainPrivate[] basics =
-		//     					 	focal method:|\cmark|
-		toolchainManager.|\colorbox{gray}{getToolchainsForType}|("basic", session); |\label{line:real}|
+			//     					 	focal method:|\cmark|
+			toolchainManager.|\colorbox{gray}{getToolchainsForType}|("basic", session); |\label{line:real}|
 		
 		assertEquals( 0, basics.length );
 	}
