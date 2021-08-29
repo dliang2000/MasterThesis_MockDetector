@@ -18,7 +18,7 @@ Figure~\ref{fig:mockExample2Evaluation} displays the second example, a test from
 
 Both the Soot and Doop implementations identify all the field mocks, and consequently report three mock invocations from the test case. They also successfully output the Invoke Expressions or the corresponding call-graph edges for the three mock invocations: \texttt{getContentType()}, \texttt{deserializerFor()}, and \texttt{unsupportedMediaType()}. By a process of elimination, we could deduce that \texttt{intercept()} on Line~\ref{line:focal-method} is the focal method. 
 
-The heuristic of Ghafari's algorithm requires the unit test case having at least one assertion statement. Since this unit test case does not contain any assertion statement, it is unclear what Ghafari's algorithm would return as a focal method, or if Ghafari's algorithm could handle this type of unit test cases without assertion statements.
+The heuristic of Ghafari's algorithm requires the unit test case having at least one assertion statement. Since this unit test case does not contain any assertion statement, it is unclear what Ghafari's algorithm will return as a focal method, or if Ghafari's algorithm could handle this type of unit test cases without assertion statements.
 
 Both examples qualitatively demonstrate that our \textsc{MockDetector} tool can help remove invocations on mocks from consideration as focal methods, thus making it easier to identify focal methods. We believe our tool could augment the precision of Ghafari's algorithm. We could also potentially construct a novel elimination-based algorithm. Such an algorithm might be better since it considers more methods that are actually focal methods, like sophisticated getters.
 
