@@ -9,13 +9,13 @@ Static analysis is an important tool for code analysis, especially when analyzin
 
 Dataflow analysis~\cite{kildall73:_unified_approac_global_progr_optim} is a static analysis which is performed on a program's control flow graph (CFG). A CFG is a directed graph in which each node stands for a statement in the program (the statement could be an assignment statement, an if statement, etc.), and the set of directed edges represents the overall control flow of the program.
 
-Dataflow analysis, meanwhile, is a fixed point algorithm that computes and gathers all the facts at each program point (i.e., each node in the CFG). The facts would usually be a mapping between program variables and the abstractions specifically defined to solve the problem at hand. The most important decision for a dataflow analysis is the abstraction and associated flow functions to update the abstraction at each program point.
+Dataflow analysis, meanwhile, is typically implemented using a fixed point algorithm that computes and gathers all the facts at each program point (i.e., each node in the CFG). The facts would usually be a mapping between program variables and the abstractions specifically defined to solve the problem at hand. The most important decision for a dataflow analysis is the abstraction and associated flow functions to update the abstraction at each program point.
 
 \paragraph{Forward vs. Backward} Researchers or developers need to make two additional decisions before implementation. First, they must decide if the problem should be categorized as a forward or backward dataflow problem. For a forward dataflow analysis, the facts propagate along the direction of the control flow. Determining whether expressions are available (i.e. have already been computed) at each program point is a type of forward dataflow problem. On the other hand, the facts propagate in the opposite direction from the control flow in a backward dataflow analysis, and most importantly, we need to access the future usage of the variables. Analyzing the liveness of variables is a known backward dataflow problem. Few dataflow problems require bidirectional flows.
 
 \paragraph{May vs. Must} Researchers or developers also need to decide if it is a may or must dataflow problem. The core difference between the two types of problems is how they handle the facts at all the join points in the program, where multiple branches meet. A may dataflow analysis keeps facts that hold true on any joined path. ``Reaching Definitions" is a may analysis problem. It checks if a definition (or assignment) of a variable reaches a specific program point. On the other hand, must dataflow analysis only keeps facts that hold true from all the branches. Determining available expressions is a must analysis problem.
 
-\paragraph{Gen and Kill Set} All dataflow analyses requires a transfer function of some kind for each program point. Generally, the actions on the dataflow analysis domain are often called ``gen" and ``kill". When we have set of facts at each statement, the kill action removes the facts that are no long true from the set, while the gen action adds new facts that are now true. The flow function describing such process are of the form
+\paragraph{Gen and Kill Set} All dataflow analyses requires a transfer function of some kind for each program point. Generally, the actions on the dataflow analysis domain are often called ``gen" and ``kill". When we have set of facts at each statement, the kill action removes the facts that are no longer true from the set, while the gen action adds new facts that are now true. The flow function describing such process are of the form
 
 \begin{equation}
 out(s) = gen(s) \bigcup (in(s)  \setminus  kill(s))
@@ -32,12 +32,12 @@ An intermediate representation (IR) is an abstract language designed for ease of
 For our project, we use Jimple (simple Java), which is a stackless, typed 3-address IR in the CFG. To familiarize the reader with Jimple IR's syntax, the following is an example of high-level Java code and its corresponding Jimple IR for code that defines a mock object.
 
 Java source code:
-\begin{lstlisting}[basicstyle=\linespread{1.0}\ttfamily\small]
+\begin{lstlisting}[basicstyle=\linespread{1.0}\ttfamily\small,numbers=none]
 MavenSession session = mock(MavenSession.class);
 \end{lstlisting}
 
 Jimple IR:
-\begin{lstlisting}[basicstyle=\linespread{1.0}\ttfamily\small,escapechar=|]
+\begin{lstlisting}[basicstyle=\linespread{1.0}\ttfamily\small,escapechar=|,numbers=none]
 org.apache.maven.execution.MavenSession r1;
 java.lang.Object $r2;
 $r2 = staticinvoke <org.mockito.Mockito:
